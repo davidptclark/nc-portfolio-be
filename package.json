@@ -1,0 +1,31 @@
+{
+  "name": "nc-portfolio-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "seed": "node ./db/seeds/run-seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidptclark/nc-portfolio-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidptclark/nc-portfolio-be/issues"
+  },
+  "homepage": "https://github.com/davidptclark/nc-portfolio-be#readme",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "pg": "^8.7.3"
+  }
+}

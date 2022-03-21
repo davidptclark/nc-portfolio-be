@@ -1,0 +1,42 @@
+module.exports = [
+  {
+    name: "video1",
+    authorId: 1,
+    created_at: 1602986400000,
+    votes: 0,
+    description: "first video",
+    cloudinaryId: "adsf89adf",
+  },
+  {
+    name: "video2",
+    authorId: 2,
+    created_at: 1578406080000,
+    votes: 0,
+    description: "second video",
+    cloudinaryId: "jsueif32",
+  },
+  {
+    name: "video3",
+    authorId: 2,
+    created_at: 1596464040000,
+    votes: 0,
+    description: "third video",
+    cloudinaryId: "789amsje",
+  },
+  {
+    name: "video4",
+    authorId: 4,
+    created_at: 1587089280000,
+    votes: 0,
+    description: "fourth video",
+    cloudinaryId: "iujdhsnd",
+  },
+  {
+    name: "video5",
+    authorId: 4,
+    created_at: 1591438200000,
+    votes: 0,
+    description: "fifth video",
+    cloudinaryId: "83js1kau",
+  },
+];

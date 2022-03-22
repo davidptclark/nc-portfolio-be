@@ -12,34 +12,34 @@ const createTables = async () => {
 
   await db.query(`CREATE TABLE videos (
           cloudinary_id VARCHAR PRIMARY KEY,
-          title VARCHAR,
+          title VARCHAR NOT NULL,
           username VARCHAR REFERENCES users(username) NOT NULL,
           created_at TIMESTAMP DEFAULT NOW(),
           votes INT DEFAULT 0 NOT NULL,
           description VARCHAR
           );`);
 
-  //   db.query(
-  //     `CREATE TABLE tags (
-  //     tag_id SERIAL PRIMARY KEY,
-  //     video_id VARCHAR NOT NULL REFERENCES videos(video_id),
-  //     )`,
-  //   );
-  //   db.query(
-  //     `CREATE TABLE comments(
-  //     comment_id SERIAL PRIMARY KEY,
-  //     body VARCHAR NOT NULL,
-  //     author VARCHAR REFERENCES users(username) NOT NULL,
-  //     video_id INT NOT NULL REFERENCES videos(video_id),
-  //     created_at TIMESTAMP DEFAULT NOW(),
-  // )`,
-  //   );
+  db.query(
+    `CREATE TABLE tags (
+      tag_id SERIAL PRIMARY KEY,
+      video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id)
+      );`,
+  );
+  db.query(
+    `CREATE TABLE comments(
+      comment_id SERIAL PRIMARY KEY,
+      body VARCHAR NOT NULL,
+      username VARCHAR REFERENCES users(username) NOT NULL,
+      video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
+      created_at TIMESTAMP DEFAULT NOW()
+  );`,
+  );
 };
 const dropTables = async () => {
+  await db.query(`DROP TABLE IF EXISTS tags;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS videos;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
-  await db.query(`DROP TABLE IF EXISTS tags;`);
 };
 
 module.exports = { createTables, dropTables };

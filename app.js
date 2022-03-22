@@ -1,4 +1,4 @@
-const { getVideos } = require("./controllers/controller");
+const { getVideos } = require("./controllers/video-controllers");
 const express = require("express");
 
 const app = express();

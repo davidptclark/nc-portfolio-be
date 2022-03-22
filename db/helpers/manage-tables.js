@@ -19,14 +19,8 @@ const createTables = async () => {
           description VARCHAR
           );`);
 
-  db.query(
-    `CREATE TABLE tags (
-      tag_id SERIAL PRIMARY KEY,
-      video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id)
-      );`,
-  );
-  db.query(
-    `CREATE TABLE comments(
+  const createCommentsTable = db.query(
+    `CREATE TABLE comments (
       comment_id SERIAL PRIMARY KEY,
       body VARCHAR NOT NULL,
       username VARCHAR REFERENCES users(username) NOT NULL,
@@ -34,6 +28,16 @@ const createTables = async () => {
       created_at TIMESTAMP DEFAULT NOW()
   );`,
   );
+
+  const createTagsTable = db.query(
+    `CREATE TABLE tags (
+      tag_id SERIAL PRIMARY KEY,
+      video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
+      tag VARCHAR NOT NULL 
+      );`,
+  );
+
+  await Promise.all([createCommentsTable, createTagsTable]);
 };
 const dropTables = async () => {
   await db.query(`DROP TABLE IF EXISTS tags;`);

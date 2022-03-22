@@ -33,6 +33,32 @@ const seed = async ({ commentData, userData, videoData, tagData }) => {
   await db.query(insertVideosQueryStr).then((result) => {
     return result.rows;
   });
+
+  const convertedCommentData = commentData.map((comment) =>
+    convertTimestampToDate(comment),
+  );
+
+  const insertCommentsQueryStr = format(
+    "INSERT INTO comments (body, username, video_id, created_at) VALUES %L RETURNING *;",
+    convertedCommentData.map(({ body, username, video_id, created_at }) => {
+      return [body, username, video_id, created_at];
+    }),
+  );
+
+  await db.query(insertCommentsQueryStr).then((result) => {
+    return result.rows;
+  });
+
+  const insertTagsQueryStr = format(
+    "INSERT INTO tags (video_id, tag) VALUES %L RETURNING *;",
+    tagData.map(({ videoId, tag }) => {
+      return [videoId, tag];
+    }),
+  );
+
+  await db.query(insertTagsQueryStr).then((result) => {
+    return result.rows;
+  });
 };
 
 module.exports = seed;

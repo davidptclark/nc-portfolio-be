@@ -3,7 +3,13 @@ const format = require("pg-format");
 const db = require("../connection");
 const { convertTimestampToDate } = require("../helpers/utils");
 
-const seed = async ({ commentData, userData, videoData, tagData }) => {
+const seed = async ({
+  commentData,
+  userData,
+  videoData,
+  tags_videosData,
+  tagsData,
+}) => {
   await dropTables();
   await createTables();
 
@@ -17,6 +23,13 @@ const seed = async ({ commentData, userData, videoData, tagData }) => {
   );
 
   await db.query(insertUsersQueryStr).then((result) => {
+    return result.rows;
+  });
+  const insertTagsQueryStr = format(
+    "INSERT INTO tags (tag) VALUES %L RETURNING *;",
+    tagsData.map(({ tag }) => [tag]),
+  );
+  await db.query(insertTagsQueryStr).then((result) => {
     return result.rows;
   });
 
@@ -51,14 +64,14 @@ const seed = async ({ commentData, userData, videoData, tagData }) => {
     return result.rows;
   });
 
-  const insertTagsQueryStr = format(
-    "INSERT INTO tags (video_id, tag) VALUES %L RETURNING *;",
-    tagData.map(({ videoId, tag }) => {
+  const insertTagsVideosQueryStr = format(
+    "INSERT INTO tags_videos (video_id, tag) VALUES %L RETURNING *;",
+    tags_videosData.map(({ videoId, tag }) => {
       return [videoId, tag];
     })
   );
 
-  await db.query(insertTagsQueryStr).then((result) => {
+  await db.query(insertTagsVideosQueryStr).then((result) => {
     return result.rows;
   });
 };

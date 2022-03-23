@@ -17,7 +17,6 @@ exports.getCommentsByVideoId = (req, res, next) => {
 exports.postCommentByVideoId = (req, res, next) => {
   const { body, username } = req.body;
   const { video_id } = req.params;
-  console.log(video_id);
   addCommentByVideoId(body, username, video_id)
     .then((body) => {
       res.status(201).send({ postedComment: body[0] });

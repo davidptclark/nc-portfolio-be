@@ -7,12 +7,13 @@ exports.getVideos = (req, res) => {
   });
 };
 
-exports.postVideo = (req, res) => {
+exports.postVideo = (req, res, next) => {
   const { title, username, description, cloudinary_id } = req.body;
   addVideo(title, username, description, cloudinary_id)
     .then((body) => {
-      console.log(body[0]);
       res.status(201).send({ postedVideo: body[0] });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      next(err);
+    });
 };

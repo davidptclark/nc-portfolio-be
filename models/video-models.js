@@ -14,6 +14,5 @@ exports.addVideo = (title, username, description, cloudinary_id) => {
     )
     .then((result) => {
       return result.rows;
-    })
-    .catch((err) => console.log(err));
+    });
 };

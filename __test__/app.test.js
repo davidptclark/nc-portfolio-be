@@ -23,9 +23,36 @@ describe("api/videos ", () => {
               votes: expect.any(Number),
               description: expect.any(String),
               created_at: expect.any(String),
-            }),
+            })
           );
         });
+      });
+  });
+});
+
+describe("api/videos ", () => {
+  test("POST, should post a video and return object with posted video", () => {
+    const testVideo = {
+      title: "My new React Project",
+      username: "icellusedkars",
+      description: "This a front-end project using React and MUI.",
+      cloudinary_id: "adsf89adz",
+    };
+    return request(app)
+      .post("/api/videos")
+      .send(testVideo)
+      .expect(201)
+      .then(({ body: { postedVideo } }) => {
+        expect(postedVideo).toEqual(
+          expect.objectContaining({
+            title: "My new React Project",
+            votes: 0,
+            created_at: expect.any(String),
+            username: "icellusedkars", //CAREFUL: this user MUST be registered and be within users table before commenting otherwise violates FK constraint
+            description: "This a front-end project using React and MUI.",
+            cloudinary_id: "adsf89adz",
+          })
+        );
       });
   });
 });

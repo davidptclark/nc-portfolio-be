@@ -13,7 +13,6 @@ exports.authenticateUser = (username, password) => {
   return db
     .query("SELECT password FROM users WHERE username=$1", [username])
     .then(({ rows }) => {
-      console.log(rows);
       if (rows.length === 0)
         return Promise.reject({ status: 404, msg: "User Not Found" });
 

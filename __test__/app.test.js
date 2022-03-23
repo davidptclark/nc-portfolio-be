@@ -157,6 +157,23 @@ describe("PATCH /api/videos/:video_id", () => {
       });
   });
 
+  test("Returns the video object with the votes updated even when the vote is negative", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: -4 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          cloudinary_id: "jsueif32",
+          title: "video2",
+          username: "icellusedkars",
+          created_at: "2020-01-07T14:08:00.000Z",
+          votes: -4,
+          description: "second video",
+        });
+      });
+  });
+
   test("Updates the votes correctly", () => {
     return request(app)
       .patch("/api/videos/jsueif32")

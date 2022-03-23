@@ -15,9 +15,11 @@ app.use(express.json());
 
 app.get("/api/videos", getVideos);
 
+
+app.post("/api/users/:username", getUser);
+
 app.post("/api/videos", postVideo);
 
-app.get("/api/users/:username", getUser);
 
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 

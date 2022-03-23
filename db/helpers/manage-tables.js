@@ -1,7 +1,7 @@
 const db = require("../connection");
 
 const createTables = async () => {
-  await db.query(`
+  const createUsersTable = db.query(`
   CREATE TABLE users (
     username VARCHAR PRIMARY KEY,
     avatar_url VARCHAR,
@@ -9,7 +9,10 @@ const createTables = async () => {
     type VARCHAR NOT NULL,
     social_url VARCHAR
  );`);
-
+  const createTagsTable = db.query(`CREATE TABLE tags (
+    tag VARCHAR PRIMARY KEY
+  );`);
+  await Promise.all([createUsersTable, createTagsTable]);
   await db.query(`CREATE TABLE videos (
           cloudinary_id VARCHAR PRIMARY KEY,
           title VARCHAR NOT NULL,
@@ -30,19 +33,20 @@ const createTables = async () => {
   );`
   );
 
-  const createTagsTable = db.query(
-    `CREATE TABLE tags (
-      tag_id SERIAL PRIMARY KEY,
+  const createTagsVideosTable = db.query(
+    `CREATE TABLE tags_videos (
+      tag_video_id SERIAL PRIMARY KEY,
       video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
-      tag VARCHAR NOT NULL 
-      );`
+      tag VARCHAR NOT NULL REFERENCES tags(tag)
+      );`,
   );
 
-  await Promise.all([createCommentsTable, createTagsTable]);
+  await Promise.all([createCommentsTable, createTagsVideosTable]);
 };
 const dropTables = async () => {
-  await db.query(`DROP TABLE IF EXISTS tags;`);
+  await db.query(`DROP TABLE IF EXISTS tags_videos;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
+  await db.query(`DROP TABLE IF EXISTS tags`);
   await db.query(`DROP TABLE IF EXISTS videos;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
 };

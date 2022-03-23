@@ -131,3 +131,59 @@ describe("api/comments/:video_id", () => {
       });
   });
 });
+
+describe("PATCH /api/videos/:video_id", () => {
+  test("Returns status 200 if the patch has been succcesful", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 1 })
+      .expect(200);
+  });
+
+  test("Returns the video object with the votes updated", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 3 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          cloudinary_id: "jsueif32",
+          title: "video2",
+          username: "icellusedkars",
+          created_at: "2020-01-07T14:08:00.000Z",
+          votes: 3,
+          description: "second video",
+        });
+      });
+  });
+
+  test("Updates the votes correctly", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 3 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(3);
+      });
+  });
+
+  test("Returns a status 404 if the video id does not exist", () => {
+    return request(app)
+      .patch("/api/videos/anyrandomid123")
+      .send({ vote: 3 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Video not found");
+      });
+  });
+
+  test("Return a status 404 if the request object is not valid", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ notvote: 3 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});

@@ -1,4 +1,4 @@
-const { fetchVideos } = require("../models/videoModels");
+const { fetchVideos } = require("../models/video-models");
 exports.getVideos = (req, res) => {
   const sort_by = req.query.sort_by;
 

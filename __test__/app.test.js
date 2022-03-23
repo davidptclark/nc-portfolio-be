@@ -23,18 +23,94 @@ describe("/api/videos ", () => {
               votes: expect.any(Number),
               description: expect.any(String),
               created_at: expect.any(String),
-            }),
+            })
           );
         });
       });
   });
 });
 
+describe("api/videos ", () => {
+  describe("POST video", () => {
+    test("Status: 200 - should post a video and return object with posted video", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "icellusedkars",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(201)
+        .then(({ body: { postedVideo } }) => {
+          expect(postedVideo).toEqual(
+            expect.objectContaining({
+              title: "My new React Project",
+              votes: 0,
+              created_at: expect.any(String),
+              username: "icellusedkars", //CAREFUL: this user MUST be registered and be within users table before commenting otherwise violates FK constraint
+              description: "This a front-end project using React and MUI.",
+              cloudinary_id: "adsf89adz",
+            })
+          );
+        });
+    });
+    test("Status: 404 - should respond with error message if unregistered user", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "not-a-user",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            'Key (username)=(not-a-user) is not present in table "users".'
+          );
+        });
+    });
+    test("Status: 400 - should respond with error message if Cloudinary ID is an empty string", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "not-a-user",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "",
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Cloudinary ID cannot be an empty string");
+        });
+    });
+    test('Status: 400 - responds with message "missing fields in request" when passed object with missing keys required by SQL table rules', () => {
+      const testVideo = {
+        username: "icellusedkars",
+        cloudinary_id: "adsf89adz",
+        description: "This a front-end project using React and MUI.",
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("title cannot be an empty string");
+        });
+    });
+  });
+});
+
 describe("/api/users/:username", () => {
-  describe("GET", () => {
+  describe("POST", () => {
     test("Status:200 - Returns user object", () => {
       return request(app)
-        .get("/api/users/butter_bridge")
+        .post("/api/users/butter_bridge")
+        .send({ password: "Password1" })
         .expect(200)
         .then(({ body: { user } }) => {
           expect(user).toMatchObject({
@@ -49,10 +125,20 @@ describe("/api/users/:username", () => {
     });
     test("Status:404 - Invaid username", () => {
       return request(app)
-        .get("/api/users/Invald")
+        .post("/api/users/Invalid")
+        .send({ password: "Password1" })
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("User Not Found");
+        });
+    });
+    test("Status:401 -Invalid Password", () => {
+      return request(app)
+        .post("/api/users/butter_bridge")
+        .send({ password: "Invalid" })
+        .expect(401)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Password");
         });
     });
   });
@@ -88,7 +174,7 @@ describe("api/comments/:video_id", () => {
               username: expect.any(String),
               video_id: expect.any(String),
               created_at: expect.any(String),
-            }),
+            })
           );
         });
       });
@@ -131,6 +217,7 @@ describe("api/comments/:video_id", () => {
       });
   });
 });
+
 
 describe("PATCH /api/videos/:video_id", () => {
   test("Returns status 200 if the patch has been succcesful", () => {
@@ -204,3 +291,38 @@ describe("PATCH /api/videos/:video_id", () => {
       });
   });
 });
+
+describe("/api/videos/:video_id", () => {
+  describe("GET", () => {
+    test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
+      return request(app)
+      .get("/api/videos/iujdhsnd")
+      .then(200)
+      .then(({body: {video}}) => {
+        expect(video).toEqual(
+          expect.objectContaining({
+            title: "video4",
+            username:"paul",
+            created_at: expect.any(String),
+            votes: 0,
+            description: "fourth video",
+            cloudinary_id: "iujdhsnd"
+          })
+        )
+      })
+    });
+
+    test("Status 404 - The video requested doesn't exist", ()=> {
+        return request(app)
+        .get("/api/videos/non-existant")
+        .then(404)
+        .then((response) => {
+          expect(response.body).toEqual({
+            msg: "No video found for video_id: non-existant",
+          })
+          expect(response.status).toBe(404)
+        })
+    })
+  })
+})
+

@@ -1,5 +1,5 @@
 
-const { fetchVideos, fetchVideoById, addVideo } = require("../models/video-models");
+const { fetchVideos, fetchVideoById, addVideo, removeVideoById } = require("../models/video-models");
 
 exports.getVideos = (req, res) => {
   fetchVideos().then((videos) => {
@@ -28,3 +28,13 @@ exports.postVideo = (req, res, next) => {
     });
 };
 
+exports.deleteVideoById = (req, res, next) => {
+  const {video_id} = req.params;
+
+  removeVideoById(video_id)
+  .then(() => {
+    res.status(204).end()
+  })
+  .catch(next)
+
+}

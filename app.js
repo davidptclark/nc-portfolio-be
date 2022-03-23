@@ -1,5 +1,5 @@
 
-const { getVideos, getVideoById, postVideo } = require("./controllers/video-controllers");
+const { getVideos, getVideoById, postVideo, deleteVideoById } = require("./controllers/video-controllers");
 const {
   handlePsqlErrors,
   handleCustomErrors,
@@ -15,17 +15,21 @@ const app = express();
 
 app.use(express.json());
 
+//Videos
 app.get("/api/videos", getVideos);
 app.get("/api/videos/:video_id", getVideoById);
-
-
-app.post("/api/users/:username", getUser);
-
+app.delete("/api/videos/:video_id", deleteVideoById)
 app.post("/api/videos", postVideo);
 
+//Username
+app.post("/api/users/:username", getUser);
 
+
+
+//Comments
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 
+//Errors
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);
 app.use(customerrors);

@@ -21,9 +21,9 @@ app.get("/api/users/:username", getUser);
 
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 
+app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);
 app.use(customerrors);
-app.use(handleNonPSQLErrors);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });

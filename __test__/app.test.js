@@ -102,6 +102,8 @@ describe("api/videos ", () => {
           expect(msg).toBe("title cannot be an empty string");
         });
     });
+  });
+});
 
 describe("/api/users/:username", () => {
   describe("GET", () => {
@@ -161,7 +163,7 @@ describe("api/comments/:video_id", () => {
               username: expect.any(String),
               video_id: expect.any(String),
               created_at: expect.any(String),
-            }),
+            })
           );
         });
       });

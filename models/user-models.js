@@ -25,6 +25,8 @@ exports.authenticateUser = (username, password) => {
 };
 
 exports.updateUser = (username, { bio, social_url, avatar_url }) => {
+  if (!(bio && social_url && avatar_url))
+    return Promise.reject({ status: 400, msg: "Bad Request" });
   return db
     .query(
       `UPDATE users SET 

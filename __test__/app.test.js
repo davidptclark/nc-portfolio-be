@@ -164,6 +164,18 @@ describe("/api/users/:username", () => {
           });
         });
     });
+    test("Status:400 - Invalid body", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
+        });
+    });
   });
 });
 

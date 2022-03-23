@@ -6,7 +6,10 @@ const {
 const express = require("express");
 const { getUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
-const { getCommentsByVideoId } = require("./controllers/comments-controllers");
+const {
+  getCommentsByVideoId,
+  postCommentByVideoId,
+} = require("./controllers/comments-controllers");
 const { customerrors } = require("./errors");
 
 const app = express();
@@ -20,6 +23,8 @@ app.post("/api/videos", postVideo);
 app.get("/api/users/:username", getUser);
 
 app.get("/api/comments/:video_id", getCommentsByVideoId);
+
+app.post("/api/comments/:video_id", postCommentByVideoId);
 
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);

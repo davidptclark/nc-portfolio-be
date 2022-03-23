@@ -7,7 +7,8 @@ const createTables = async () => {
     avatar_url VARCHAR,
     bio VARCHAR,
     type VARCHAR NOT NULL,
-    social_url VARCHAR
+    social_url VARCHAR,
+    password VARCHAR NOT NULL
  );`);
 
   await db.query(`CREATE TABLE videos (
@@ -26,7 +27,7 @@ const createTables = async () => {
       username VARCHAR REFERENCES users(username) NOT NULL,
       video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
       created_at TIMESTAMP DEFAULT NOW()
-  );`,
+  );`
   );
 
   const createTagsTable = db.query(
@@ -34,7 +35,7 @@ const createTables = async () => {
       tag_id SERIAL PRIMARY KEY,
       video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
       tag VARCHAR NOT NULL 
-      );`,
+      );`
   );
 
   await Promise.all([createCommentsTable, createTagsTable]);

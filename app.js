@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.get("/api/videos", getVideos);
 
-app.get("/api/users/:username", getUser);
+app.post("/api/users/:username", getUser);
 
 app.use(handleNonPSQLErrors);
 app.all("/*", (req, res) => {

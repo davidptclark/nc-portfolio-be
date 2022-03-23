@@ -31,10 +31,11 @@ describe("/api/videos ", () => {
 });
 
 describe("/api/users/:username", () => {
-  describe("GET", () => {
+  describe("POST", () => {
     test("Status:200 - Returns user object", () => {
       return request(app)
-        .get("/api/users/butter_bridge")
+        .post("/api/users/butter_bridge")
+        .send({ password: "Password1" })
         .expect(200)
         .then(({ body: { user } }) => {
           expect(user).toMatchObject({
@@ -49,10 +50,20 @@ describe("/api/users/:username", () => {
     });
     test("Status:404 - Invaid username", () => {
       return request(app)
-        .get("/api/users/Invald")
+        .post("/api/users/Invalid")
+        .send({ password: "Password1" })
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("User Not Found");
+        });
+    });
+    test("Status:401 -Invalid Password", () => {
+      return request(app)
+        .post("/api/users/butter_bridge")
+        .send({ password: "Invalid" })
+        .expect(401)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Password");
         });
     });
   });

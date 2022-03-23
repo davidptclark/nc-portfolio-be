@@ -7,7 +7,7 @@ const testData = require("../db/test-data/index");
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
-describe("api/videos ", () => {
+describe("/api/videos ", () => {
   test("GET, should return an object", () => {
     return request(app)
       .get("/api/videos")
@@ -23,9 +23,37 @@ describe("api/videos ", () => {
               votes: expect.any(Number),
               description: expect.any(String),
               created_at: expect.any(String),
-            }),
+            })
           );
         });
       });
+  });
+});
+
+describe("/api/users/:username", () => {
+  describe("GET", () => {
+    test("Status:200 - Returns user object", () => {
+      return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            bio: "I love making videos for NC",
+            type: "graduate",
+            social_url: "www.example.com",
+          });
+        });
+    });
+    test("Status:404 - Invaid username", () => {
+      return request(app)
+        .get("/api/users/Invald")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User Not Found");
+        });
+    });
   });
 });

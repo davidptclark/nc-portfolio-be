@@ -1,8 +1,10 @@
-const { getVideos, postVideo } = require("./controllers/video-controllers");
+
+const { getVideos, getVideoById, postVideo } = require("./controllers/video-controllers");
 const {
   handlePsqlErrors,
   handleCustomErrors,
 } = require("./controllers/errorControllers");
+
 const express = require("express");
 const { getUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
@@ -14,6 +16,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/videos", getVideos);
+app.get("/api/videos/:video_id", getVideoById);
 
 
 app.post("/api/users/:username", getUser);

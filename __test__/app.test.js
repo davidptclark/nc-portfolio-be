@@ -47,5 +47,13 @@ describe("/api/users/:username", () => {
           });
         });
     });
+    test("Status:404 - Invaid username", () => {
+      return request(app)
+        .get("/api/users/Invald")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User Not Found");
+        });
+    });
   });
 });

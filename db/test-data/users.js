@@ -6,6 +6,7 @@ module.exports = [
     bio: "I love making videos for NC",
     type: "graduate",
     social_url: "www.example.com",
+    password: "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
   },
   {
     username: "icellusedkars",
@@ -15,6 +16,7 @@ module.exports = [
     bio: "I like cooking",
     type: "graduate",
     social_url: "www.example.com",
+    password: "$2b$05$d3VrBcgDePj5PxDVVk5H/OXI47Q5voCEexQbcr0WoX0ZgP04LtxFu",
   },
   {
     username: "sam",
@@ -22,6 +24,7 @@ module.exports = [
     bio: "I like singing",
     type: "graduate",
     social_url: "www.example.com",
+    password: "$2b$05$uqems0pT3dRtoJ3iwbR3veKGD5a9jt5kbGCaGARrfGcKk7M5bmZhu",
   },
   {
     username: "paul",
@@ -29,6 +32,7 @@ module.exports = [
     bio: "I love playing games",
     type: "graduate",
     social_url: "www.example.com",
+    password: "$2b$05$L1rPO1e1OruS1LnE8Y1wNOIw/PhTmajojO.h7MJISoTFKCBS6ZNou",
   },
   {
     username: "do_nothing",
@@ -37,5 +41,6 @@ module.exports = [
     bio: "I love lego",
     type: "employer",
     social_url: "www.example.com",
+    password: "$2b$05$aVgsdq58ltefBIje7Rg5kOImzQUm6InVCiR.14yvTOFxkIe98RWJu",
   },
 ];

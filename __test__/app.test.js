@@ -3,7 +3,6 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
-const { expect } = require("@jest/globals");
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));

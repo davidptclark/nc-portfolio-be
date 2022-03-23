@@ -14,10 +14,12 @@ const seed = async ({
   await createTables();
 
   const insertUsersQueryStr = format(
-    "INSERT INTO users (username, avatar_url, bio, type, social_url) VALUES %L RETURNING *;",
-    userData.map(({ username, avatar_url, bio, type, social_url }) => {
-      return [username, avatar_url, bio, type, social_url];
-    }),
+    "INSERT INTO users (username, avatar_url, bio, type, social_url,password) VALUES %L RETURNING *;",
+    userData.map(
+      ({ username, avatar_url, bio, type, social_url, password }) => {
+        return [username, avatar_url, bio, type, social_url, password];
+      }
+    )
   );
 
   await db.query(insertUsersQueryStr).then((result) => {
@@ -32,7 +34,7 @@ const seed = async ({
   });
 
   const convertedVideoData = videoData.map((video) =>
-    convertTimestampToDate(video),
+    convertTimestampToDate(video)
   );
 
   const insertVideosQueryStr = format(
@@ -40,22 +42,22 @@ const seed = async ({
     convertedVideoData.map(
       ({ title, username, created_at, votes, description, cloudinary_id }) => {
         return [title, username, created_at, votes, description, cloudinary_id];
-      },
-    ),
+      }
+    )
   );
   await db.query(insertVideosQueryStr).then((result) => {
     return result.rows;
   });
 
   const convertedCommentData = commentData.map((comment) =>
-    convertTimestampToDate(comment),
+    convertTimestampToDate(comment)
   );
 
   const insertCommentsQueryStr = format(
     "INSERT INTO comments (body, username, video_id, created_at) VALUES %L RETURNING *;",
     convertedCommentData.map(({ body, username, video_id, created_at }) => {
       return [body, username, video_id, created_at];
-    }),
+    })
   );
 
   await db.query(insertCommentsQueryStr).then((result) => {
@@ -66,7 +68,7 @@ const seed = async ({
     "INSERT INTO tags_videos (video_id, tag) VALUES %L RETURNING *;",
     tags_videosData.map(({ videoId, tag }) => {
       return [videoId, tag];
-    }),
+    })
   );
 
   await db.query(insertTagsVideosQueryStr).then((result) => {

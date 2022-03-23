@@ -19,7 +19,8 @@ const createTables = async () => {
           username VARCHAR REFERENCES users(username) NOT NULL,
           created_at TIMESTAMP DEFAULT NOW(),
           votes INT DEFAULT 0 NOT NULL,
-          description VARCHAR
+          description VARCHAR,
+          CHECK (cloudinary_id <> '')
           );`);
 
   const createCommentsTable = db.query(
@@ -29,7 +30,7 @@ const createTables = async () => {
       username VARCHAR REFERENCES users(username) NOT NULL,
       video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
       created_at TIMESTAMP DEFAULT NOW()
-  );`,
+  );`
   );
 
   const createTagsVideosTable = db.query(

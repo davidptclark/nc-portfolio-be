@@ -57,3 +57,37 @@ describe("/api/users/:username", () => {
     });
   });
 });
+
+describe("/api/videos/:video_id", () => {
+  describe("GET", () => {
+    test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
+      return request(app)
+      .get("/api/videos/iujdhsnd")
+      .then(200)
+      .then(({body: {video}}) => {
+        expect(video).toEqual(
+          expect.objectContaining({
+            title: "video4",
+            username:"paul",
+            created_at: expect.any(String),
+            votes: 0,
+            description: "fourth video",
+            cloudinary_id: "iujdhsnd"
+          })
+        )
+      })
+    });
+
+    test("Status 404 - The video requested doesn't exist", ()=> {
+        return request(app)
+        .get("/api/videos/non-existant")
+        .then(404)
+        .then((response) => {
+          expect(response.body).toEqual({
+            msg: "No video found for video_id: non-existant",
+          })
+          expect(response.status).toBe(404)
+        })
+    })
+  })
+})

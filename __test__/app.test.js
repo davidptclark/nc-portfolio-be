@@ -176,6 +176,19 @@ describe("/api/users/:username", () => {
           expect(msg).toBe("Bad Request");
         });
     });
+    test("Status:400 - Invalid body data", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url: "asdf",
+          bio: "bio",
+          social_url: 345,
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
+        });
+    });
   });
 });
 

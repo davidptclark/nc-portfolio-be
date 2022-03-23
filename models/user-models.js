@@ -25,8 +25,14 @@ exports.authenticateUser = (username, password) => {
 };
 
 exports.updateUser = (username, { bio, social_url, avatar_url }) => {
+  const urlRegex =
+    /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   if (!(bio && social_url && avatar_url))
     return Promise.reject({ status: 400, msg: "Bad Request" });
+
+  if (!urlRegex.test(avatar_url) || !urlRegex.test(social_url))
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+
   return db
     .query(
       `UPDATE users SET 

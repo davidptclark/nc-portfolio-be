@@ -142,6 +142,29 @@ describe("/api/users/:username", () => {
         });
     });
   });
+  describe("PATCH", () => {
+    test("Status:200 - Returns patched user", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          bio: "I love making videos for NC woo",
+          social_url: "www.example-changed.com",
+        })
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+            bio: "I love making videos for NC woo",
+            type: "graduate",
+            social_url: "www.example-changed.com",
+          });
+        });
+    });
+  });
 });
 
 describe("api/comments/:video_id", () => {

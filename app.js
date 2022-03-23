@@ -4,7 +4,7 @@ const {
   handleCustomErrors,
 } = require("./controllers/errorControllers");
 const express = require("express");
-const { getUser } = require("./controllers/users-controllers");
+const { getUser, patchUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 const { getCommentsByVideoId } = require("./controllers/comments-controllers");
 const { customerrors } = require("./errors");
@@ -15,11 +15,10 @@ app.use(express.json());
 
 app.get("/api/videos", getVideos);
 
-
 app.post("/api/users/:username", getUser);
+app.patch("/api/users/:username", patchUser);
 
 app.post("/api/videos", postVideo);
-
 
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 

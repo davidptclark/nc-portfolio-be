@@ -23,3 +23,19 @@ exports.authenticateUser = (username, password) => {
         return Promise.reject({ status: 401, msg: "Invalid Password" });
     });
 };
+
+exports.updateUser = (username, { bio, social_url, avatar_url }) => {
+  return db
+    .query(
+      `UPDATE users SET 
+    bio=$1,
+    social_url=$2,
+    avatar_url=$3 
+    WHERE username=$4 
+    RETURNING username,type,bio,social_url,avatar_url`,
+      [bio, social_url, avatar_url, username]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};

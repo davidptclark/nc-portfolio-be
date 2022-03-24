@@ -5,7 +5,10 @@ const {
 } = require("./controllers/errorControllers");
 
 const express = require("express");
-const { getUser, patchUser } = require("./controllers/users-controllers");
+const {
+  getUserForSignin,
+  patchUser,
+} = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 
 const {
@@ -24,8 +27,11 @@ app.delete("/api/videos/:video_id", deleteVideoById)
 app.post("/api/videos", postVideo);
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
 
+
+app.post("/api/signin", getUserForSignin);
+
 //Username
-app.post("/api/users/:username", getUser);
+
 app.patch("/api/users/:username", patchUser);
 
 //Comments

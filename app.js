@@ -1,15 +1,17 @@
-
-const { getVideos, getVideoById, postVideo, deleteVideoById } = require("./controllers/video-controllers");
+const { getVideos, getVideoById, postVideo, updateVotesByVideoId, deleteVideoById } = require("./controllers/video-controllers");
 const {
   handlePsqlErrors,
   handleCustomErrors,
 } = require("./controllers/errorControllers");
 
 const express = require("express");
-const { getUser } = require("./controllers/users-controllers");
+const { getUser, patchUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
-const { getCommentsByVideoId } = require("./controllers/comments-controllers");
-const { customerrors } = require("./errors");
+
+const {
+  getCommentsByVideoId,
+  postCommentByVideoId,
+} = require("./controllers/comments-controllers");
 
 const app = express();
 
@@ -20,19 +22,19 @@ app.get("/api/videos", getVideos);
 app.get("/api/videos/:video_id", getVideoById);
 app.delete("/api/videos/:video_id", deleteVideoById)
 app.post("/api/videos", postVideo);
+app.patch("/api/videos/:video_id", updateVotesByVideoId);
 
 //Username
 app.post("/api/users/:username", getUser);
-
-
+app.patch("/api/users/:username", patchUser);
 
 //Comments
 app.get("/api/comments/:video_id", getCommentsByVideoId);
+app.post("/api/comments/:video_id", postCommentByVideoId);
 
 //Errors
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);
-app.use(customerrors);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });

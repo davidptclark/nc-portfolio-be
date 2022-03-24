@@ -1,9 +1,10 @@
 const db = require("../db/connection");
+
 exports.fetchCommentsByVideoId = (video_id) => {
   return db
     .query(
       "SELECT * FROM comments WHERE video_id = $1 ORDER BY created_at DESC",
-      [video_id],
+      [video_id]
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
@@ -11,5 +12,16 @@ exports.fetchCommentsByVideoId = (video_id) => {
       } else {
         return rows;
       }
+    });
+};
+
+exports.addCommentByVideoId = (body, username, video_id) => {
+  return db
+    .query(
+      "INSERT INTO comments (body, username, video_id) VALUES ($1, $2, $3) RETURNING *;",
+      [body, username, video_id]
+    )
+    .then((result) => {
+      return result.rows;
     });
 };

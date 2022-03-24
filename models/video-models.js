@@ -1,23 +1,35 @@
 const db = require("../db/connection");
-const tags = require("../db/test-data/tags");
 
-exports.fetchVideos = (sort_by = "created_at", tags) => {
+exports.fetchVideos = (sort_by = "created_at", tags, order) => {
   if (!["created_at", "votes"].includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "invalid query parameter" });
   }
+  if (!order) {
+    return Promise.reject({
+      status: 400,
+      msg: "order invalid -  should be 'asc or 'desc'",
+    });
+  }
+  const parArr = [];
   let queryStr = `SELECT title, videos.username, videos.created_at, votes, description, cloudinary_id, COUNT(comments.video_id) AS comment_count, COALESCE(t_a.tag_array, '{}') AS video_tag_array FROM videos LEFT JOIN comments ON videos.cloudinary_id = comments.video_id LEFT JOIN (SELECT tags_videos.video_id, ARRAY_AGG(tag) AS tag_array FROM tags_videos GROUP BY tags_videos.video_id) t_a ON videos.cloudinary_id = t_a.video_id `;
   if (tags) {
     tags.forEach((tag, index) => {
       if (index === 0) {
-        queryStr += `WHERE videos.cloudinary_id = ANY(SELECT video_id FROM tags_videos WHERE tag='${tag}') `;
+        queryStr += `WHERE videos.cloudinary_id = ANY(SELECT video_id FROM tags_videos WHERE tag=$${
+          parArr.length + 1
+        }) `;
+        parArr.push(tag);
       } else {
-        queryStr += `AND videos.cloudinary_id = ANY(SELECT video_id FROM tags_videos WHERE tag='${tag}')`;
+        queryStr += `AND videos.cloudinary_id = ANY(SELECT video_id FROM tags_videos WHERE tag=$${
+          parArr.length + 1
+        }) `;
+        parArr.push(tag);
       }
     });
   }
-  queryStr += ` GROUP BY videos.cloudinary_id, video_tag_array ORDER BY ${sort_by} DESC;`;
+  queryStr += `GROUP BY videos.cloudinary_id, video_tag_array ORDER BY ${sort_by} ${order};`;
 
-  return db.query(queryStr).then((result) => {
+  return db.query(queryStr, parArr).then((result) => {
     return result.rows;
   });
 };

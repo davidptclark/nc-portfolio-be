@@ -8,8 +8,17 @@ exports.getVideos = (req, res, next) => {
   let tags = [];
   const sort_by = req.query.sort_by;
   const tag = req.query.tag;
+  let order = req.query.order;
+
   if (tag) {
     tags = tag.split(",");
+  }
+  if (order === "asc") {
+    order = "ASC";
+  } else if (order === "desc" || order === undefined) {
+    order = "DESC";
+  } else {
+    order = undefined;
   }
 
   //check tags all exist, if not error
@@ -22,7 +31,7 @@ exports.getVideos = (req, res, next) => {
 
   Promise.all(promiseArr)
     .then(() => {
-      return fetchVideos(sort_by, tags);
+      return fetchVideos(sort_by, tags, order);
     })
     .then((videos) => {
       res.status(200).send({ videos });

@@ -3,10 +3,12 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
+const { compareDates } = require("../db/helpers/utils");
 const { expect } = require("@jest/globals");
-
 afterAll(() => db.end());
-beforeEach(() => seed(testData));
+beforeEach(() => {
+  return seed(testData);
+});
 
 describe("GET - /api/videos ", () => {
   test("status 200 - should return an array of video info", () => {
@@ -30,23 +32,13 @@ describe("GET - /api/videos ", () => {
       });
   });
   test("status 200 - videos should be sorted by date in descending order", () => {
-    const compareDates = (a, b) => {
-      //creating comparison function
-      if (Date.parse(a) > Date.parse(b)) {
-        return -1;
-      }
-      if (Date.parse(b) > Date.parse(a)) {
-        return 1;
-      }
-
-      return 0;
-    };
     return request(app)
       .get("/api/videos")
       .expect(200)
       .then(({ body: { videos } }) => {
         expect(videos).toBeSortedBy("created_at", {
           compare: compareDates,
+          descending: true,
         });
       });
   });
@@ -76,6 +68,26 @@ describe("GET - /api/videos ", () => {
   });
 
   describe("queries:", () => {
+    describe("order", () => {
+      test("status 200 - accepts order query by asc, desc (default)", () => {
+        return request(app)
+          .get("/api/videos?order=asc")
+          .expect(200)
+          .then(({ body: { videos } }) => {
+            expect(videos).toBeSortedBy("created_at", {
+              compare: compareDates,
+            });
+          });
+      });
+      test("status 400 - invalid order value", () => {
+        return request(app)
+          .get("/api/videos?order=asce")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("order invalid -  should be 'asc or 'desc'");
+          });
+      });
+    });
     describe("tag", () => {
       test("status 200 - accepts query for a single tag", () => {
         return request(app)

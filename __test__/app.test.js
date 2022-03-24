@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
 const { compareDates } = require("../db/helpers/utils");
+const { expect } = require("@jest/globals");
 afterAll(() => db.end());
 beforeEach(() => {
   return seed(testData);
@@ -581,7 +582,7 @@ describe("PATCH /api/videos/:video_id", () => {
 
 describe("/api/videos/:video_id", () => {
   describe("GET - /api/videos/:video_id", () => {
-    test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
+    test.only("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
         .get("/api/videos/iujdhsnd")
 
@@ -601,7 +602,19 @@ describe("/api/videos/:video_id", () => {
         });
     });
 
-    test("Status 404 - The video requested doesn't exist", () => {
+    test.only("status 200 - video has comment_count property", () => {
+      return request(app)
+        .get("/api/videos/iujdhsnd")
+        .expect(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              comment_count: expect.any(String),
+            }),
+          );
+        });
+    });
+    test.only("Status 404 - The video requested doesn't exist", () => {
       return request(app)
         .get("/api/videos/non-existant")
         .expect(404)

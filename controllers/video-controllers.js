@@ -67,7 +67,10 @@ exports.getVideoById = (req, res, next) => {
     .then((video) => {
       res.status(200).send({ video });
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 exports.postVideo = (req, res, next) => {

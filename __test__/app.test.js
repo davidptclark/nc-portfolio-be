@@ -92,7 +92,6 @@ describe("POST /api/videos ", () => {
           return db.query("SELECT * FROM tags_videos");
         })
         .then(({ rows }) => {
-          console.log(rows);
           expect(rows.length).toBe(11);
           expect(
             rows.filter((row) => row.video_id === "adsf89adz").length

@@ -574,7 +574,21 @@ describe("/api/users", () => {
         .send({ username: "hello" })
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("type cannot be an empty string/null");
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("Status:400 - Invalid type", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "Test",
+          password:
+            "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+          type: "Invalid",
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
         });
     });
   });

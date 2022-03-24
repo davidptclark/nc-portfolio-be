@@ -55,6 +55,8 @@ exports.updateUser = (username, { bio, social_url, avatar_url }) => {
 };
 
 exports.insertUser = ({ username, type, password }) => {
+  if (!["graduate", "employer"].includes(type))
+    return Promise.reject({ status: 400, msg: "Bad Request" });
   return db
     .query(
       `INSERT INTO users 

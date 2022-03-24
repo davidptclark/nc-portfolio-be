@@ -430,7 +430,6 @@ describe("/api/videos/:video_id", () => {
   });
 });
 
-
 describe("GET /api/tags", () => {
   test("If the request is succesful returns a status 200", () => {
     return request(app).get("/api/tags").expect(200);
@@ -464,7 +463,6 @@ describe("GET /api/tags", () => {
         });
       });
   });
-
 
   describe("DELETE - /api/videos/:video_id", () => {
     test("Status 204 - Deletes a video when passed its id", () => {
@@ -543,6 +541,31 @@ describe("/api/signin", () => {
         .expect(401)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid Password");
+        });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("POST", () => {
+    test("Status:201 - Returns creaated user", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "Test",
+          password:
+            "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+          type: "graduate",
+        })
+        .expect(201)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "Test",
+            avatar_url: null,
+            bio: null,
+            type: "graduate",
+            social_url: null,
+          });
         });
     });
   });

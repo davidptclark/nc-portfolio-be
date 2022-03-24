@@ -1,4 +1,12 @@
-const { fetchVideos, fetchVideoById, addVideo, patchVotesByVideoId, removeVideoById } = require("../models/video-models");
+const {
+  fetchVideos,
+  fetchVideoById,
+  addVideo,
+  patchVotesByVideoId,
+  removeVideoById,
+} = require("../models/video-models");
+
+const { addUniqueTags, addVideoIdAndTags } = require("../models/tags-models");
 
 exports.getVideos = (req, res) => {
   fetchVideos().then((videos) => {
@@ -28,24 +36,41 @@ exports.getVideoById = (req, res, next) => {
     .catch(next);
 };
 
+// exports.postVideo = (req, res, next) => {
+//   const { title, username, description, cloudinary_id } = req.body;
+//   addVideo(title, username, description, cloudinary_id)
+//     .then((body) => {
+//       res.status(201).send({ postedVideo: body[0] });
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };
+
 exports.postVideo = (req, res, next) => {
-  const { title, username, description, cloudinary_id } = req.body;
-  addVideo(title, username, description, cloudinary_id)
-    .then((body) => {
+  const { title, username, description, cloudinary_id, tags } = req.body;
+  if (!tags) {
+    res
+      .status(400)
+      .send({ msg: "Bad Request: Tag property is missing from request body" });
+  }
+  Promise.all([
+    addVideo(title, username, description, cloudinary_id),
+    addUniqueTags(tags),
+    addVideoIdAndTags(tags, cloudinary_id),
+  ])
+    .then(([body]) => {
       res.status(201).send({ postedVideo: body[0] });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.deleteVideoById = (req, res, next) => {
-  const {video_id} = req.params;
+  const { video_id } = req.params;
 
   removeVideoById(video_id)
-  .then(() => {
-    res.status(204).end()
-  })
-  .catch(next)
-}
-
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(next);
+};

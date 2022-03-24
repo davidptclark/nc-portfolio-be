@@ -30,9 +30,9 @@ describe("/api/videos ", () => {
   });
 });
 
-describe("api/videos ", () => {
+describe("POST /api/videos ", () => {
   describe("POST video", () => {
-    test("Status: 200 - should post a video and return object with posted video", () => {
+    test("Status: 201 - should post a video and return object with posted video", () => {
       const testVideo = {
         title: "My new React Project",
         username: "icellusedkars",
@@ -85,10 +85,10 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Cloudinary ID cannot be an empty string");
+          expect(msg).toBe("Cloudinary ID cannot be an empty string/null");
         });
     });
-    test('Status: 400 - responds with message "missing fields in request" when passed object with missing keys required by SQL table rules', () => {
+    test("Status: 400 - responds with error message when passed object with missing keys required by SQL table rules", () => {
       const testVideo = {
         username: "icellusedkars",
         cloudinary_id: "adsf89adz",
@@ -99,7 +99,7 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("title cannot be an empty string");
+          expect(msg).toBe("title cannot be an empty string/null");
         });
     });
   });
@@ -265,3 +265,180 @@ describe("api/comments/:video_id", () => {
       });
   });
 });
+
+
+describe("POST /api/comments", () => {
+  test("Status: 201 - should post comment to chosen video and return object body from table", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(201)
+      .then(({ body: { postedComment } }) => {
+        expect(postedComment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Great idea!",
+            username: "icellusedkars",
+            video_id: "adsf89adf",
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("Status: 404 - should respond with error message if unregistered user", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (username)=(not-a-user) is not present in table "users".'
+        );
+      });
+  });
+  test("Status: 400 - responds with message when passed object with missing keys required by SQL table rules", () => {
+    const testComment = {
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("body cannot be an empty string/null");
+      });
+  });
+  test("Status: 404 - should respond with error message when a non-existent video id is given", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/not-an-id")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (video_id)=(not-an-id) is not present in table "videos".'
+        );
+      });
+  });
+});
+
+
+describe("PATCH /api/videos/:video_id", () => {
+  test("Returns status 200 if the patch has been succcesful", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 1 })
+      .expect(200);
+  });
+
+  test("Returns the video object with the votes updated", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 3 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          cloudinary_id: "jsueif32",
+          title: "video2",
+          username: "icellusedkars",
+          created_at: "2020-01-07T14:08:00.000Z",
+          votes: 3,
+          description: "second video",
+        });
+      });
+  });
+
+  test("Returns the video object with the votes updated even when the vote is negative", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: -4 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          cloudinary_id: "jsueif32",
+          title: "video2",
+          username: "icellusedkars",
+          created_at: "2020-01-07T14:08:00.000Z",
+          votes: -4,
+          description: "second video",
+        });
+      });
+  });
+
+  test("Updates the votes correctly", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ vote: 3 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(3);
+      });
+  });
+
+  test("Returns a status 404 if the video id does not exist", () => {
+    return request(app)
+      .patch("/api/videos/anyrandomid123")
+      .send({ vote: 3 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Video not found");
+      });
+  });
+
+  test("Return a status 404 if the request object is not valid", () => {
+    return request(app)
+      .patch("/api/videos/jsueif32")
+      .send({ notvote: 3 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("/api/videos/:video_id", () => {
+  describe("GET", () => {
+    test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
+      return request(app)
+      .get("/api/videos/iujdhsnd")
+      .then(200)
+      .then(({body: {video}}) => {
+        expect(video).toEqual(
+          expect.objectContaining({
+            title: "video4",
+            username:"paul",
+            created_at: expect.any(String),
+            votes: 0,
+            description: "fourth video",
+            cloudinary_id: "iujdhsnd"
+          })
+        )
+      })
+    });
+
+    test("Status 404 - The video requested doesn't exist", ()=> {
+        return request(app)
+        .get("/api/videos/non-existant")
+        .then(404)
+        .then((response) => {
+          expect(response.body).toEqual({
+            msg: "No video found for video_id: non-existant",
+          })
+          expect(response.status).toBe(404)
+        })
+    })
+  })
+})
+
+

@@ -582,7 +582,7 @@ describe("PATCH /api/videos/:video_id", () => {
 
 describe("/api/videos/:video_id", () => {
   describe("GET - /api/videos/:video_id", () => {
-    test.only("Status 200 - Gets a video based on the cloudinary id supplied", () => {
+    test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
         .get("/api/videos/iujdhsnd")
 
@@ -602,7 +602,7 @@ describe("/api/videos/:video_id", () => {
         });
     });
 
-    test.only("status 200 - video has comment_count property", () => {
+    test("status 200 - video has comment_count property", () => {
       return request(app)
         .get("/api/videos/iujdhsnd")
         .expect(200)
@@ -614,7 +614,17 @@ describe("/api/videos/:video_id", () => {
           );
         });
     });
-    test.only("Status 404 - The video requested doesn't exist", () => {
+    test("status 200 - video has video_tag_array property", () => {
+      return request(app)
+        .get("/api/videos/iujdhsnd")
+        .expect(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({ video_tag_array: expect.any(Array) }),
+          );
+        });
+    });
+    test("Status 404 - The video requested doesn't exist", () => {
       return request(app)
         .get("/api/videos/non-existant")
         .expect(404)

@@ -56,7 +56,7 @@ exports.patchVotesByVideoId = ({ vote, video_id }) => {
 exports.fetchVideoById = (cloudinary_id) => {
   return db
     .query(
-      `SELECT title, videos.username, videos.created_at, votes, description, cloudinary_id, COUNT(comments.video_id) AS comment_count FROM videos LEFT JOIN comments ON videos.cloudinary_id=comments.video_id WHERE cloudinary_id = $1 GROUP BY cloudinary_id;`,
+      `SELECT title, videos.username, videos.created_at, votes, description, cloudinary_id, COUNT(comments.video_id) AS comment_count, COALESCE(t_a.tag_array, '{}') AS video_tag_array FROM videos LEFT JOIN comments ON videos.cloudinary_id=comments.video_id LEFT JOIN (SELECT tags_videos.video_id, ARRAY_AGG(tag) AS tag_array FROM tags_videos WHERE video_id = $1 GROUP BY tags_videos.video_id) t_a ON videos.cloudinary_id = t_a.video_id WHERE cloudinary_id = $1 GROUP BY cloudinary_id, video_tag_array;`,
       [cloudinary_id],
     )
     .then(({ rows }) => {

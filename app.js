@@ -13,6 +13,7 @@ const express = require("express");
 const { getUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 const { getCommentsByVideoId } = require("./controllers/comments-controllers");
+const { getAllTags } = require("./controllers/tags-controllers");
 
 const app = express();
 
@@ -28,6 +29,8 @@ app.post("/api/videos", postVideo);
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
+
+app.get("/api/tags", getAllTags);
 
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);

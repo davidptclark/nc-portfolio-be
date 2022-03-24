@@ -23,7 +23,7 @@ describe("/api/videos ", () => {
               votes: expect.any(Number),
               description: expect.any(String),
               created_at: expect.any(String),
-            })
+            }),
           );
         });
       });
@@ -52,7 +52,7 @@ describe("api/videos ", () => {
               username: "icellusedkars", //CAREFUL: this user MUST be registered and be within users table before commenting otherwise violates FK constraint
               description: "This a front-end project using React and MUI.",
               cloudinary_id: "adsf89adz",
-            })
+            }),
           );
         });
     });
@@ -69,7 +69,7 @@ describe("api/videos ", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe(
-            'Key (username)=(not-a-user) is not present in table "users".'
+            'Key (username)=(not-a-user) is not present in table "users".',
           );
         });
     });
@@ -174,7 +174,7 @@ describe("api/comments/:video_id", () => {
               username: expect.any(String),
               video_id: expect.any(String),
               created_at: expect.any(String),
-            })
+            }),
           );
         });
       });
@@ -217,7 +217,6 @@ describe("api/comments/:video_id", () => {
       });
   });
 });
-
 
 describe("PATCH /api/videos/:video_id", () => {
   test("Returns status 200 if the patch has been succcesful", () => {
@@ -296,33 +295,67 @@ describe("/api/videos/:video_id", () => {
   describe("GET", () => {
     test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
-      .get("/api/videos/iujdhsnd")
-      .then(200)
-      .then(({body: {video}}) => {
-        expect(video).toEqual(
-          expect.objectContaining({
-            title: "video4",
-            username:"paul",
-            created_at: expect.any(String),
-            votes: 0,
-            description: "fourth video",
-            cloudinary_id: "iujdhsnd"
-          })
-        )
-      })
+        .get("/api/videos/iujdhsnd")
+        .then(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              title: "video4",
+              username: "paul",
+              created_at: expect.any(String),
+              votes: 0,
+              description: "fourth video",
+              cloudinary_id: "iujdhsnd",
+            }),
+          );
+        });
     });
 
-    test("Status 404 - The video requested doesn't exist", ()=> {
-        return request(app)
+    test("Status 404 - The video requested doesn't exist", () => {
+      return request(app)
         .get("/api/videos/non-existant")
         .then(404)
         .then((response) => {
           expect(response.body).toEqual({
             msg: "No video found for video_id: non-existant",
-          })
-          expect(response.status).toBe(404)
-        })
-    })
-  })
-})
+          });
+          expect(response.status).toBe(404);
+        });
+    });
+  });
+});
 
+describe("GET /api/tags", () => {
+  test("If the request is succesful returns a status 200", () => {
+    return request(app).get("/api/tags").expect(200);
+  });
+  test("Returns an object with an array of tags on the key 'tags'", () => {
+    return request(app)
+      .get("/api/tags")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.constructor).toBe(Object);
+        expect(body.tags.constructor).toBe(Array);
+      });
+  });
+
+  test("Returns the correct tags", () => {
+    return request(app)
+      .get("/api/tags")
+      .expect(200)
+      .then(({ body: tags }) => {
+        expect(tags).toEqual({
+          tags: [
+            { tag: "javascript" },
+            { tag: "python" },
+            { tag: "aws" },
+            { tag: "express" },
+            { tag: "react-native" },
+            { tag: "jest" },
+            { tag: "frontend" },
+            { tag: "backend" },
+          ],
+        });
+      });
+  });
+});

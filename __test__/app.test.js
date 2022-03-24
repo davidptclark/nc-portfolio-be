@@ -548,7 +548,7 @@ describe("/api/signin", () => {
 
 describe("/api/users", () => {
   describe("POST", () => {
-    test("Status:201 - Returns creaated user", () => {
+    test("Status:201 - Returns created user", () => {
       return request(app)
         .post("/api/users")
         .send({
@@ -566,6 +566,15 @@ describe("/api/users", () => {
             type: "graduate",
             social_url: null,
           });
+        });
+    });
+    test("Status:400 - Invalid body", () => {
+      return request(app)
+        .post("/api/users")
+        .send({ username: "hello" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("type cannot be an empty string/null");
         });
     });
   });

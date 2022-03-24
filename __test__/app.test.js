@@ -508,7 +508,6 @@ describe("/api/videos/:video_id", () => {
   });
 });
 
-
 describe("GET /api/tags", () => {
   test("If the request is succesful returns a status 200", () => {
     return request(app).get("/api/tags").expect(200);
@@ -620,6 +619,54 @@ describe("/api/signin", () => {
         .expect(401)
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Invalid Password");
+        });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("POST", () => {
+    test("Status:201 - Returns created user", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "Test",
+          password:
+            "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+          type: "graduate",
+        })
+        .expect(201)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "Test",
+            avatar_url: null,
+            bio: null,
+            type: "graduate",
+            social_url: null,
+          });
+        });
+    });
+    test("Status:400 - Invalid body", () => {
+      return request(app)
+        .post("/api/users")
+        .send({ username: "hello" })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("Status:400 - Invalid type", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "Test",
+          password:
+            "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+          type: "Invalid",
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
         });
     });
   });

@@ -53,3 +53,19 @@ exports.updateUser = (username, { bio, social_url, avatar_url }) => {
       return rows[0];
     });
 };
+
+exports.insertUser = ({ username, type, password }) => {
+  if (!["graduate", "employer"].includes(type))
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  return db
+    .query(
+      `INSERT INTO users 
+    (username,type,password) 
+    VALUES ($1,$2,$3) 
+    RETURNING username,type,bio,social_url,avatar_url`,
+      [username, type, password]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};

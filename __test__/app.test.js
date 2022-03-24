@@ -30,9 +30,9 @@ describe("/api/videos ", () => {
   });
 });
 
-describe("api/videos ", () => {
+describe("POST /api/videos ", () => {
   describe("POST video", () => {
-    test("Status: 200 - should post a video and return object with posted video", () => {
+    test("Status: 201 - should post a video and return object with posted video", () => {
       const testVideo = {
         title: "My new React Project",
         username: "icellusedkars",
@@ -85,10 +85,10 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Cloudinary ID cannot be an empty string");
+          expect(msg).toBe("Cloudinary ID cannot be an empty string/null");
         });
     });
-    test('Status: 400 - responds with message "missing fields in request" when passed object with missing keys required by SQL table rules', () => {
+    test("Status: 400 - responds with error message when passed object with missing keys required by SQL table rules", () => {
       const testVideo = {
         username: "icellusedkars",
         cloudinary_id: "adsf89adz",
@@ -99,46 +99,58 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("title cannot be an empty string");
+          expect(msg).toBe("title cannot be an empty string/null");
         });
     });
   });
 });
 
 describe("/api/users/:username", () => {
-  describe("POST", () => {
-    test("Status:200 - Returns user object", () => {
+  describe("PATCH", () => {
+    test("Status:200 - Returns patched user", () => {
       return request(app)
-        .post("/api/users/butter_bridge")
-        .send({ password: "Password1" })
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          bio: "I love making videos for NC woo",
+          social_url: "www.example-changed.com",
+        })
         .expect(200)
         .then(({ body: { user } }) => {
           expect(user).toMatchObject({
             username: "butter_bridge",
             avatar_url:
-              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
-            bio: "I love making videos for NC",
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+            bio: "I love making videos for NC woo",
             type: "graduate",
-            social_url: "www.example.com",
+            social_url: "www.example-changed.com",
           });
         });
     });
-    test("Status:404 - Invaid username", () => {
+    test("Status:400 - Invalid body", () => {
       return request(app)
-        .post("/api/users/Invalid")
-        .send({ password: "Password1" })
-        .expect(404)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        })
+        .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("User Not Found");
+          expect(msg).toBe("Bad Request");
         });
     });
-    test("Status:401 -Invalid Password", () => {
+    test("Status:400 - Invalid body data", () => {
       return request(app)
-        .post("/api/users/butter_bridge")
-        .send({ password: "Invalid" })
-        .expect(401)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url: "asdf",
+          bio: "bio",
+          social_url: 345,
+        })
+        .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Invalid Password");
+          expect(msg).toBe("Bad Request");
         });
     });
   });
@@ -218,6 +230,74 @@ describe("api/comments/:video_id", () => {
   });
 });
 
+
+describe("POST /api/comments", () => {
+  test("Status: 201 - should post comment to chosen video and return object body from table", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(201)
+      .then(({ body: { postedComment } }) => {
+        expect(postedComment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Great idea!",
+            username: "icellusedkars",
+            video_id: "adsf89adf",
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("Status: 404 - should respond with error message if unregistered user", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (username)=(not-a-user) is not present in table "users".'
+        );
+      });
+  });
+  test("Status: 400 - responds with message when passed object with missing keys required by SQL table rules", () => {
+    const testComment = {
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("body cannot be an empty string/null");
+      });
+  });
+  test("Status: 404 - should respond with error message when a non-existent video id is given", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/not-an-id")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (video_id)=(not-an-id) is not present in table "videos".'
+        );
+      });
+  });
+});
+
+
 describe("PATCH /api/videos/:video_id", () => {
   test("Returns status 200 if the patch has been succcesful", () => {
     return request(app)
@@ -292,11 +372,13 @@ describe("PATCH /api/videos/:video_id", () => {
 });
 
 describe("/api/videos/:video_id", () => {
-  describe("GET", () => {
+  describe("GET - /api/videos/:video_id", () => {
     test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
         .get("/api/videos/iujdhsnd")
-        .then(200)
+
+        .expect(200)
+
         .then(({ body: { video } }) => {
           expect(video).toEqual(
             expect.objectContaining({
@@ -306,7 +388,9 @@ describe("/api/videos/:video_id", () => {
               votes: 0,
               description: "fourth video",
               cloudinary_id: "iujdhsnd",
-            }),
+
+            })
+
           );
         });
     });
@@ -314,7 +398,7 @@ describe("/api/videos/:video_id", () => {
     test("Status 404 - The video requested doesn't exist", () => {
       return request(app)
         .get("/api/videos/non-existant")
-        .then(404)
+        .expect(404)
         .then((response) => {
           expect(response.body).toEqual({
             msg: "No video found for video_id: non-existant",
@@ -323,6 +407,7 @@ describe("/api/videos/:video_id", () => {
         });
     });
   });
+
 });
 
 describe("GET /api/tags", () => {
@@ -357,5 +442,88 @@ describe("GET /api/tags", () => {
           ],
         });
       });
+
+
+
+  describe("DELETE - /api/videos/:video_id", () => {
+    test("Status 204 - Deletes a video when passed its id", () => {
+      return request(app)
+        .delete("/api/videos/iujdhsnd")
+        .expect(204)
+        .then(() => {
+          return request(app)
+            .get("/api/videos")
+            .expect(200)
+            .then(({ body: { videos } }) => {
+              expect(videos.length).toBe(4);
+              for (let i = 0; i < videos.length; i++) {
+                expect(videos[i].cloudinary_id).not.toBe("iujdhsnd");
+              }
+              return db.query(
+                `SELECT * FROM videos WHERE cloudinary_id = 'iujdhsnd';`
+              );
+            })
+            .then(({ rows }) => {
+              expect(rows).toEqual([]);
+            });
+        });
+    });
+
+    test("Status 404 - The video to delete does not exist", () => {
+      return request(app)
+        .delete("/api/videos/non-existant")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("No video found for video_id: non-existant");
+        });
+    });
+  });
+});
+
+describe("/api/signin", () => {
+  describe("POST", () => {
+    test("Status:200 - Returns user object", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({
+          username: "butter_bridge",
+          password:
+            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
+        })
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            bio: "I love making videos for NC",
+            type: "graduate",
+            social_url: "www.example.com",
+          });
+        });
+    });
+    test("Status:404 - Invaid username", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({
+          username: "Invalid",
+          password:
+            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User Not Found");
+        });
+    });
+    test("Status:401 -Invalid Password", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({ username: "butter_bridge", password: "Invalid" })
+        .expect(401)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Password");
+        });
+    });
+
   });
 });

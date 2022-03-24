@@ -30,9 +30,9 @@ describe("/api/videos ", () => {
   });
 });
 
-describe("api/videos ", () => {
+describe("POST /api/videos ", () => {
   describe("POST video", () => {
-    test("Status: 200 - should post a video and return object with posted video", () => {
+    test("Status: 201 - should post a video and return object with posted video", () => {
       const testVideo = {
         title: "My new React Project",
         username: "icellusedkars",
@@ -85,10 +85,10 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Cloudinary ID cannot be an empty string");
+          expect(msg).toBe("Cloudinary ID cannot be an empty string/null");
         });
     });
-    test('Status: 400 - responds with message "missing fields in request" when passed object with missing keys required by SQL table rules', () => {
+    test("Status: 400 - responds with error message when passed object with missing keys required by SQL table rules", () => {
       const testVideo = {
         username: "icellusedkars",
         cloudinary_id: "adsf89adz",
@@ -99,7 +99,7 @@ describe("api/videos ", () => {
         .send(testVideo)
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("title cannot be an empty string");
+          expect(msg).toBe("title cannot be an empty string/null");
         });
     });
   });
@@ -219,6 +219,73 @@ describe("api/comments/:video_id", () => {
 });
 
 
+describe("POST /api/comments", () => {
+  test("Status: 201 - should post comment to chosen video and return object body from table", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(201)
+      .then(({ body: { postedComment } }) => {
+        expect(postedComment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Great idea!",
+            username: "icellusedkars",
+            video_id: "adsf89adf",
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("Status: 404 - should respond with error message if unregistered user", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (username)=(not-a-user) is not present in table "users".'
+        );
+      });
+  });
+  test("Status: 400 - responds with message when passed object with missing keys required by SQL table rules", () => {
+    const testComment = {
+      username: "not-a-user",
+    };
+    return request(app)
+      .post("/api/comments/adsf89adf")
+      .send(testComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("body cannot be an empty string/null");
+      });
+  });
+  test("Status: 404 - should respond with error message when a non-existent video id is given", () => {
+    const testComment = {
+      body: "Great idea!",
+      username: "icellusedkars",
+    };
+    return request(app)
+      .post("/api/comments/not-an-id")
+      .send(testComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          'Key (video_id)=(not-an-id) is not present in table "videos".'
+        );
+      });
+  });
+});
+
+
 describe("PATCH /api/videos/:video_id", () => {
   test("Returns status 200 if the patch has been succcesful", () => {
     return request(app)
@@ -325,4 +392,5 @@ describe("/api/videos/:video_id", () => {
     })
   })
 })
+
 

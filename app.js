@@ -10,7 +10,7 @@ const {
 } = require("./controllers/errorControllers");
 
 const express = require("express");
-const { getUser } = require("./controllers/users-controllers");
+const { getUser, patchUser } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 
 const {
@@ -23,9 +23,12 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/videos", getVideos);
+
 app.get("/api/videos/:video_id", getVideoById);
 
+
 app.post("/api/users/:username", getUser);
+app.patch("/api/users/:username", patchUser);
 
 app.post("/api/videos", postVideo);
 

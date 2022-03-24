@@ -142,6 +142,54 @@ describe("/api/users/:username", () => {
         });
     });
   });
+  describe("PATCH", () => {
+    test("Status:200 - Returns patched user", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          bio: "I love making videos for NC woo",
+          social_url: "www.example-changed.com",
+        })
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+            bio: "I love making videos for NC woo",
+            type: "graduate",
+            social_url: "www.example-changed.com",
+          });
+        });
+    });
+    test("Status:400 - Invalid body", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
+        });
+    });
+    test("Status:400 - Invalid body data", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .send({
+          avatar_url: "asdf",
+          bio: "bio",
+          social_url: 345,
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request");
+        });
+    });
+  });
 });
 
 describe("api/comments/:video_id", () => {

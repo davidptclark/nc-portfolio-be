@@ -3,31 +3,32 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
+const { expect } = require("@jest/globals");
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
 describe("GET - /api/videos ", () => {
-  // test("status 200 - should return an array of video info", () => {
-  //   return request(app)
-  //     .get("/api/videos")
-  //     .expect(200)
-  //     .then(({ body: { videos } }) => {
-  //       expect(videos.length).toBe(5);
-  //       videos.forEach((video) => {
-  //         expect(video).toEqual(
-  //           expect.objectContaining({
-  //             cloudinary_id: expect.any(String),
-  //             title: expect.any(String),
-  //             username: expect.any(String),
-  //             votes: expect.any(Number),
-  //             description: expect.any(String),
-  //             created_at: expect.any(String),
-  //           }),
-  //         );
-  //       });
-  //     });
-  // });
+  test("status 200 - should return an array of video info", () => {
+    return request(app)
+      .get("/api/videos")
+      .expect(200)
+      .then(({ body: { videos } }) => {
+        expect(videos.length).toBe(5);
+        videos.forEach((video) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              cloudinary_id: expect.any(String),
+              title: expect.any(String),
+              username: expect.any(String),
+              votes: expect.any(Number),
+              description: expect.any(String),
+              created_at: expect.any(String),
+            }),
+          );
+        });
+      });
+  });
   test("status 200 - videos should be sorted by date in descending order", () => {
     const compareDates = (a, b) => {
       //creating comparison function
@@ -61,25 +62,66 @@ describe("GET - /api/videos ", () => {
         });
       });
   });
+  test("status 200 - videos each have an array of tags property", () => {
+    return request(app)
+      .get("/api/videos")
+      .expect(200)
+      .then(({ body: { videos } }) => {
+        videos.forEach((video) => {
+          expect(video).toEqual(
+            expect.objectContaining({ video_tag_array: expect.any(Array) }),
+          );
+        });
+      });
+  });
+
   describe("queries:", () => {
-    describe("sort_by", () => {
-      test("status 200 - accepts sort_by=date(default),votes", () => {
+    describe("tag", () => {
+      test("status 200 - accepts query for a single tag", () => {
         return request(app)
-          .get("/api/videos?sort_by=votes")
+          .get("/api/videos?tag=javascript")
           .expect(200)
           .then(({ body: { videos } }) => {
-            expect(videos).toBeSortedBy("votes");
+            expect(videos).toHaveLength(2);
           });
       });
 
-      // test("status 400 - invalid query parameter", () => {
-      //   return request(app)
-      //     .get("/api/videos?sort_by=voes")
-      //     .expect(400)
-      //     .then(({ body: { msg } }) => {
-      //       expect(msg).toBe("invalid query parameter");
-      //     });
-      // });
+      test("status 200 - accepts query for multiple tags", () => {
+        return request(app)
+          .get("/api/videos?tag=javascript,express")
+          .expect(200)
+          .then(({ body: { videos } }) => {
+            expect(videos).toHaveLength(1);
+          });
+      });
+      test("status 400 - at least one tag doesn't exist", () => {
+        return request(app)
+          .get("/api/videos?tag=ja")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("tag not found : ja");
+          });
+      });
+    });
+  });
+
+  describe("sort_by", () => {
+    test("status 200 - accepts sort_by=date(default),votes", () => {
+      return request(app)
+        .get("/api/videos?sort_by=votes")
+        .expect(200)
+        .then(({ body: { videos } }) => {
+          expect(videos).toBeSortedBy("votes");
+        });
+    });
+
+    test("status 400 - invalid query parameter", () => {
+      return request(app)
+        .get("/api/videos?sort_by=voes")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid query parameter");
+        });
     });
   });
 });

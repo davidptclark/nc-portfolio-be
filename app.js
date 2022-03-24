@@ -18,9 +18,6 @@ const {
   postCommentByVideoId,
 } = require("./controllers/comments-controllers");
 
-const { getCommentsByVideoId } = require("./controllers/comments-controllers");
-
-
 const app = express();
 
 app.use(express.json());
@@ -34,11 +31,9 @@ app.post("/api/videos", postVideo);
 
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 
-
 app.post("/api/comments/:video_id", postCommentByVideoId);
 
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
-
 
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);

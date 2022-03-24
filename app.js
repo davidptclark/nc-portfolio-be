@@ -1,4 +1,10 @@
-const { getVideos, getVideoById, postVideo, updateVotesByVideoId, deleteVideoById } = require("./controllers/video-controllers");
+const {
+  getVideos,
+  getVideoById,
+  postVideo,
+  updateVotesByVideoId,
+  deleteVideoById,
+} = require("./controllers/video-controllers");
 const {
   handlePsqlErrors,
   handleCustomErrors,
@@ -8,6 +14,7 @@ const express = require("express");
 const {
   getUserForSignin,
   patchUser,
+  getUser,
 } = require("./controllers/users-controllers");
 const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 
@@ -23,16 +30,16 @@ app.use(express.json());
 //Videos
 app.get("/api/videos", getVideos);
 app.get("/api/videos/:video_id", getVideoById);
-app.delete("/api/videos/:video_id", deleteVideoById)
+app.delete("/api/videos/:video_id", deleteVideoById);
 app.post("/api/videos", postVideo);
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
-
 
 app.post("/api/signin", getUserForSignin);
 
 //Username
 
 app.patch("/api/users/:username", patchUser);
+app.get("/api/users/:username", getUser);
 
 //Comments
 app.get("/api/comments/:video_id", getCommentsByVideoId);

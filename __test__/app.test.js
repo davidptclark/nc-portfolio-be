@@ -154,6 +154,23 @@ describe("/api/users/:username", () => {
         });
     });
   });
+  describe("GET", () => {
+    test("Status:200 - Returns user object", () => {
+      return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            bio: "I love making videos for NC",
+            type: "graduate",
+            social_url: "www.example.com",
+          });
+        });
+    });
+  });
 });
 
 describe("api/comments/:video_id", () => {
@@ -401,7 +418,6 @@ describe("/api/videos/:video_id", () => {
         });
     });
   });
-
 
   describe("DELETE - /api/videos/:video_id", () => {
     test("Status 204 - Deletes a video when passed its id", () => {

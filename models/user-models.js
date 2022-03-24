@@ -3,7 +3,10 @@ const bcrypt = require("bcrypt");
 
 exports.fetchUser = (username) => {
   return db
-    .query("SELECT * FROM users WHERE username=$1", [username])
+    .query(
+      "SELECT username,type,bio,social_url,avatar_url FROM users WHERE username=$1",
+      [username]
+    )
     .then(({ rows }) => {
       return rows[0];
     });

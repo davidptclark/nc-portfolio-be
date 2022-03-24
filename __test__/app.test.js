@@ -4,7 +4,6 @@ const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
 const { compareDates } = require("../db/helpers/utils");
-const { expect } = require("@jest/globals");
 afterAll(() => db.end());
 beforeEach(() => {
   return seed(testData);

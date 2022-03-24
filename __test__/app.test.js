@@ -408,37 +408,70 @@ describe("PATCH /api/videos/:video_id", () => {
 });
 
 describe("/api/videos/:video_id", () => {
-  describe("GET", () => {
+  describe("GET - /api/videos/:video_id", () => {
     test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
-      .get("/api/videos/iujdhsnd")
-      .then(200)
-      .then(({body: {video}}) => {
-        expect(video).toEqual(
-          expect.objectContaining({
-            title: "video4",
-            username:"paul",
-            created_at: expect.any(String),
-            votes: 0,
-            description: "fourth video",
-            cloudinary_id: "iujdhsnd"
-          })
-        )
-      })
+        .get("/api/videos/iujdhsnd")
+        .expect(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              title: "video4",
+              username: "paul",
+              created_at: expect.any(String),
+              votes: 0,
+              description: "fourth video",
+              cloudinary_id: "iujdhsnd",
+            })
+          );
+        });
     });
 
-    test("Status 404 - The video requested doesn't exist", ()=> {
-        return request(app)
+    test("Status 404 - The video requested doesn't exist", () => {
+      return request(app)
         .get("/api/videos/non-existant")
-        .then(404)
+        .expect(404)
         .then((response) => {
           expect(response.body).toEqual({
             msg: "No video found for video_id: non-existant",
-          })
-          expect(response.status).toBe(404)
-        })
-    })
-  })
-})
+          });
+          expect(response.status).toBe(404);
+        });
+    });
+  });
 
+  describe("DELETE - /api/videos/:video_id", () => {
+    test("Status 204 - Deletes a video when passed its id", () => {
+      return request(app)
+        .delete("/api/videos/iujdhsnd")
+        .expect(204)
+        .then(() => {
+          return request(app)
+            .get("/api/videos")
+            .expect(200)
+            .then(({ body: { videos } }) => {
+              expect(videos.length).toBe(4);
+              for (let i = 0; i < videos.length; i++) {
+                expect(videos[i].cloudinary_id).not.toBe("iujdhsnd");
+              }
+              return db.query(
+                `SELECT * FROM videos WHERE cloudinary_id = 'iujdhsnd';`
+              );
+            })
+            .then(({ rows }) => {
+              expect(rows).toEqual([]);
+            });
+        });
+    });
+
+    test("Status 404 - The video to delete does not exist", () => {
+      return request(app)
+        .delete("/api/videos/non-existant")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("No video found for video_id: non-existant");
+        });
+    });
+  });
+});
 

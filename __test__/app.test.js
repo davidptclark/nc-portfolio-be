@@ -106,42 +106,6 @@ describe("POST /api/videos ", () => {
 });
 
 describe("/api/users/:username", () => {
-  describe("POST", () => {
-    test("Status:200 - Returns user object", () => {
-      return request(app)
-        .post("/api/users/butter_bridge")
-        .send({ password: "Password1" })
-        .expect(200)
-        .then(({ body: { user } }) => {
-          expect(user).toMatchObject({
-            username: "butter_bridge",
-            avatar_url:
-              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
-            bio: "I love making videos for NC",
-            type: "graduate",
-            social_url: "www.example.com",
-          });
-        });
-    });
-    test("Status:404 - Invaid username", () => {
-      return request(app)
-        .post("/api/users/Invalid")
-        .send({ password: "Password1" })
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("User Not Found");
-        });
-    });
-    test("Status:401 -Invalid Password", () => {
-      return request(app)
-        .post("/api/users/butter_bridge")
-        .send({ password: "Invalid" })
-        .expect(401)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Invalid Password");
-        });
-    });
-  });
   describe("PATCH", () => {
     test("Status:200 - Returns patched user", () => {
       return request(app)
@@ -266,7 +230,6 @@ describe("api/comments/:video_id", () => {
   });
 });
 
-
 describe("POST /api/comments", () => {
   test("Status: 201 - should post comment to chosen video and return object body from table", () => {
     const testComment = {
@@ -332,7 +295,6 @@ describe("POST /api/comments", () => {
       });
   });
 });
-
 
 describe("PATCH /api/videos/:video_id", () => {
   test("Returns status 200 if the patch has been succcesful", () => {
@@ -411,34 +373,79 @@ describe("/api/videos/:video_id", () => {
   describe("GET", () => {
     test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
-      .get("/api/videos/iujdhsnd")
-      .then(200)
-      .then(({body: {video}}) => {
-        expect(video).toEqual(
-          expect.objectContaining({
-            title: "video4",
-            username:"paul",
-            created_at: expect.any(String),
-            votes: 0,
-            description: "fourth video",
-            cloudinary_id: "iujdhsnd"
-          })
-        )
-      })
+        .get("/api/videos/iujdhsnd")
+        .then(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              title: "video4",
+              username: "paul",
+              created_at: expect.any(String),
+              votes: 0,
+              description: "fourth video",
+              cloudinary_id: "iujdhsnd",
+            })
+          );
+        });
     });
 
-    test("Status 404 - The video requested doesn't exist", ()=> {
-        return request(app)
+    test("Status 404 - The video requested doesn't exist", () => {
+      return request(app)
         .get("/api/videos/non-existant")
         .then(404)
         .then((response) => {
           expect(response.body).toEqual({
             msg: "No video found for video_id: non-existant",
-          })
-          expect(response.status).toBe(404)
+          });
+          expect(response.status).toBe(404);
+        });
+    });
+  });
+});
+
+describe("/api/signin", () => {
+  describe("POST", () => {
+    test("Status:200 - Returns user object", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({
+          username: "butter_bridge",
+          password:
+            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
         })
-    })
-  })
-})
-
-
+        .expect(200)
+        .then(({ body: { user } }) => {
+          expect(user).toMatchObject({
+            username: "butter_bridge",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            bio: "I love making videos for NC",
+            type: "graduate",
+            social_url: "www.example.com",
+          });
+        });
+    });
+    test("Status:404 - Invaid username", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({
+          username: "Invalid",
+          password:
+            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
+        })
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User Not Found");
+        });
+    });
+    test("Status:401 -Invalid Password", () => {
+      return request(app)
+        .post("/api/signin")
+        .send({ username: "butter_bridge", password: "Invalid" })
+        .expect(401)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Invalid Password");
+        });
+    });
+  });
+});

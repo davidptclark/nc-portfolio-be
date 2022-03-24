@@ -36,17 +36,6 @@ exports.getVideoById = (req, res, next) => {
     .catch(next);
 };
 
-// exports.postVideo = (req, res, next) => {
-//   const { title, username, description, cloudinary_id } = req.body;
-//   addVideo(title, username, description, cloudinary_id)
-//     .then((body) => {
-//       res.status(201).send({ postedVideo: body[0] });
-//     })
-//     .catch((err) => {
-//       next(err);
-//     });
-// };
-
 exports.postVideo = (req, res, next) => {
   const { title, username, description, cloudinary_id, tags } = req.body;
   if (!tags) {

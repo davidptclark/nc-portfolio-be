@@ -38,6 +38,7 @@ describe("POST /api/videos ", () => {
         username: "icellusedkars",
         description: "This a front-end project using React and MUI.",
         cloudinary_id: "adsf89adz",
+        tags: ["vue", "redux", "javascript", "python"],
       };
       return request(app)
         .post("/api/videos")
@@ -56,12 +57,87 @@ describe("POST /api/videos ", () => {
           );
         });
     });
+    test("Status: 201 - should post a video and only unique tags should be in the tag table", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "icellusedkars",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+        tags: ["vue", "redux", "javascript", "python"], //Two new tags, two existing tags
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(201)
+        .then(() => {
+          return db.query("SELECT * FROM tags");
+        })
+        .then(({ rows }) => {
+          expect(rows.length).toBe(10);
+        });
+    });
+    test("Status: 201 - should post a video and add one instance of video id with each tag in tags_video table", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "icellusedkars",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+        tags: ["vue", "redux", "javascript", "python"], //Two new tags, two existing tags
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(201)
+        .then(() => {
+          return db.query("SELECT * FROM tags_videos");
+        })
+        .then(({ rows }) => {
+          expect(rows.length).toBe(11);
+          expect(
+            rows.filter((row) => row.video_id === "adsf89adz").length
+          ).toBe(4);
+        });
+    });
+    test("Status: 400 - should respond with error message if no tags are supplied", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "icellusedkars",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+        tags: [],
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request: No tags provided");
+        });
+    });
+    test("Status: 400 - should respond with error message if tag property is missing from object", () => {
+      const testVideo = {
+        title: "My new React Project",
+        username: "icellusedkars",
+        description: "This a front-end project using React and MUI.",
+        cloudinary_id: "adsf89adz",
+      };
+      return request(app)
+        .post("/api/videos")
+        .send(testVideo)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            "Bad Request: Tag property is missing from request body"
+          );
+        });
+    });
     test("Status: 404 - should respond with error message if unregistered user", () => {
       const testVideo = {
         title: "My new React Project",
         username: "not-a-user",
         description: "This a front-end project using React and MUI.",
         cloudinary_id: "adsf89adz",
+        tags: ["vue", "redux", "javascript", "python"],
       };
       return request(app)
         .post("/api/videos")
@@ -79,6 +155,7 @@ describe("POST /api/videos ", () => {
         username: "not-a-user",
         description: "This a front-end project using React and MUI.",
         cloudinary_id: "",
+        tags: ["vue", "redux", "javascript", "python"],
       };
       return request(app)
         .post("/api/videos")
@@ -93,6 +170,7 @@ describe("POST /api/videos ", () => {
         username: "icellusedkars",
         cloudinary_id: "adsf89adz",
         description: "This a front-end project using React and MUI.",
+        tags: ["vue", "redux", "javascript", "python"],
       };
       return request(app)
         .post("/api/videos")
@@ -464,7 +542,6 @@ describe("GET /api/tags", () => {
         });
       });
   });
-
 
   describe("DELETE - /api/videos/:video_id", () => {
     test("Status 204 - Deletes a video when passed its id", () => {

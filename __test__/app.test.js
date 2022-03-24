@@ -399,7 +399,9 @@ describe("/api/videos/:video_id", () => {
     test("Status 200 - Gets a video based on the cloudinary id supplied", () => {
       return request(app)
         .get("/api/videos/iujdhsnd")
+
         .expect(200)
+
         .then(({ body: { video } }) => {
           expect(video).toEqual(
             expect.objectContaining({
@@ -426,6 +428,43 @@ describe("/api/videos/:video_id", () => {
         });
     });
   });
+});
+
+
+describe("GET /api/tags", () => {
+  test("If the request is succesful returns a status 200", () => {
+    return request(app).get("/api/tags").expect(200);
+  });
+  test("Returns an object with an array of tags on the key 'tags'", () => {
+    return request(app)
+      .get("/api/tags")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.constructor).toBe(Object);
+        expect(body.tags.constructor).toBe(Array);
+      });
+  });
+
+  test("Returns the correct tags", () => {
+    return request(app)
+      .get("/api/tags")
+      .expect(200)
+      .then(({ body: tags }) => {
+        expect(tags).toEqual({
+          tags: [
+            { tag: "javascript" },
+            { tag: "python" },
+            { tag: "aws" },
+            { tag: "express" },
+            { tag: "react-native" },
+            { tag: "jest" },
+            { tag: "frontend" },
+            { tag: "backend" },
+          ],
+        });
+      });
+  });
+
 
   describe("DELETE - /api/videos/:video_id", () => {
     test("Status 204 - Deletes a video when passed its id", () => {

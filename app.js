@@ -7,7 +7,7 @@ const {
 } = require("./controllers/video-controllers");
 const {
   handlePsqlErrors,
-  handleCustomErrors,
+  handleNonPSQLErrors,
 } = require("./controllers/errorControllers");
 
 const express = require("express");
@@ -17,7 +17,6 @@ const {
   getUser,
   postUser,
 } = require("./controllers/users-controllers");
-const { handleNonPSQLErrors } = require("./controllers/errorControllers");
 
 const { getAllTags } = require("./controllers/tags-controllers");
 
@@ -36,6 +35,8 @@ app.get("/api/videos/:video_id", getVideoById);
 app.delete("/api/videos/:video_id", deleteVideoById);
 app.post("/api/videos", postVideo);
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
+
+app.post("/api/users/:username", getUser);
 
 app.post("/api/signin", getUserForSignin);
 

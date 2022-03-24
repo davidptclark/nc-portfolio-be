@@ -7,7 +7,8 @@ const createTables = async () => {
     avatar_url VARCHAR,
     bio VARCHAR,
     type VARCHAR NOT NULL,
-    social_url VARCHAR
+    social_url VARCHAR,
+    password VARCHAR NOT NULL
  );`);
   const createTagsTable = db.query(`CREATE TABLE tags (
     tag VARCHAR PRIMARY KEY
@@ -37,8 +38,10 @@ const createTables = async () => {
     `CREATE TABLE tags_videos (
       tag_video_id SERIAL PRIMARY KEY,
       video_id VARCHAR NOT NULL REFERENCES videos(cloudinary_id),
+
       tag VARCHAR NOT NULL REFERENCES tags(tag)
       );`,
+
   );
 
   await Promise.all([createCommentsTable, createTagsVideosTable]);

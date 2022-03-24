@@ -34,6 +34,25 @@ exports.fetchVideos = (sort_by = "created_at", tags, order) => {
   });
 };
 
+exports.patchVotesByVideoId = ({ vote, video_id }) => {
+  if (vote === undefined) {
+    return Promise.reject({ status: 404, msg: "Bad request" });
+  } else {
+    return db
+      .query(
+        "UPDATE videos SET votes = votes + $1 WHERE cloudinary_id = $2 RETURNING *",
+        [vote, video_id],
+      )
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ status: 404, msg: "Video not found" });
+        } else {
+          return rows[0];
+        }
+      });
+  }
+};
+
 exports.fetchVideoById = (cloudinary_id) => {
   return db
     .query(
@@ -61,5 +80,23 @@ exports.addVideo = (title, username, description, cloudinary_id) => {
     )
     .then((result) => {
       return result.rows;
+    });
+};
+
+exports.removeVideoById = (cloudinary_id) => {
+  return db
+    .query(
+      `DELETE FROM videos
+    WHERE videos.cloudinary_id = $1
+    RETURNING *;`,
+      [cloudinary_id],
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `No video found for video_id: ${cloudinary_id}`,
+        });
+      }
     });
 };

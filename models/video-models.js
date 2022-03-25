@@ -36,12 +36,12 @@ exports.fetchVideos = (sort_by = "created_at", tags, order) => {
 
 exports.patchVotesByVideoId = ({ vote, video_id }) => {
   if (vote === undefined) {
-    return Promise.reject({ status: 404, msg: "Bad request" });
+    return Promise.reject({ status: 400, msg: "Bad request" });
   } else {
     return db
       .query(
         "UPDATE videos SET votes = votes + $1 WHERE cloudinary_id = $2 RETURNING *",
-        [vote, video_id],
+        [vote, video_id]
       )
       .then(({ rows }) => {
         if (rows.length === 0) {
@@ -58,7 +58,7 @@ exports.fetchVideoById = (cloudinary_id) => {
     .query(
       `SELECT * FROM videos
   WHERE cloudinary_id = $1;`,
-      [cloudinary_id],
+      [cloudinary_id]
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
@@ -76,7 +76,7 @@ exports.addVideo = (title, username, description, cloudinary_id) => {
   return db
     .query(
       "INSERT INTO videos (title, username, description, cloudinary_id) VALUES ($1, $2, $3, $4) RETURNING *;",
-      [title, username, description, cloudinary_id],
+      [title, username, description, cloudinary_id]
     )
     .then((result) => {
       return result.rows;
@@ -89,7 +89,7 @@ exports.removeVideoById = (cloudinary_id) => {
       `DELETE FROM videos
     WHERE videos.cloudinary_id = $1
     RETURNING *;`,
-      [cloudinary_id],
+      [cloudinary_id]
     )
     .then(({ rows }) => {
       if (rows.length === 0) {

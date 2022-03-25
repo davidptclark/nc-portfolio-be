@@ -36,8 +36,6 @@ app.delete("/api/videos/:video_id", deleteVideoById);
 app.post("/api/videos", postVideo);
 app.patch("/api/videos/:video_id", updateVotesByVideoId);
 
-app.post("/api/users/:username", getUser);
-
 app.post("/api/signin", getUserForSignin);
 
 //Username

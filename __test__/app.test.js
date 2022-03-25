@@ -27,7 +27,7 @@ describe("/api/videos", () => {
                 votes: expect.any(Number),
                 description: expect.any(String),
                 created_at: expect.any(String),
-              })
+              }),
             );
           });
         });
@@ -50,7 +50,7 @@ describe("/api/videos", () => {
         .then(({ body: { videos } }) => {
           videos.forEach((video) => {
             expect(video).toEqual(
-              expect.objectContaining({ comment_count: expect.any(String) })
+              expect.objectContaining({ comment_count: expect.any(String) }),
             );
           });
         });
@@ -62,7 +62,7 @@ describe("/api/videos", () => {
         .then(({ body: { videos } }) => {
           videos.forEach((video) => {
             expect(video).toEqual(
-              expect.objectContaining({ video_tag_array: expect.any(Array) })
+              expect.objectContaining({ video_tag_array: expect.any(Array) }),
             );
           });
         });
@@ -159,7 +159,7 @@ describe("/api/videos", () => {
               username: "icellusedkars", //CAREFUL: this user MUST be registered and be within users table before commenting otherwise violates FK constraint
               description: "This a front-end project using React and MUI.",
               cloudinary_id: "adsf89adz",
-            })
+            }),
           );
         });
     });
@@ -200,7 +200,7 @@ describe("/api/videos", () => {
         .then(({ rows }) => {
           expect(rows.length).toBe(11);
           expect(
-            rows.filter((row) => row.video_id === "adsf89adz").length
+            rows.filter((row) => row.video_id === "adsf89adz").length,
           ).toBe(4);
         });
     });
@@ -233,7 +233,7 @@ describe("/api/videos", () => {
         .expect(400)
         .then(({ body: { msg } }) => {
           expect(msg).toBe(
-            "Bad Request: Tag property is missing from request body"
+            "Bad Request: Tag property is missing from request body",
           );
         });
     });
@@ -251,7 +251,7 @@ describe("/api/videos", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe(
-            'Key (username)=(not-a-user) is not present in table "users".'
+            'Key (username)=(not-a-user) is not present in table "users".',
           );
         });
     });
@@ -396,7 +396,7 @@ describe("/api/comments/:video_id", () => {
                 username: expect.any(String),
                 video_id: expect.any(String),
                 created_at: expect.any(String),
-              })
+              }),
             );
           });
         });
@@ -460,7 +460,7 @@ describe("/api/comments", () => {
               username: "icellusedkars",
               video_id: "adsf89adf",
               created_at: expect.any(String),
-            })
+            }),
           );
         });
     });
@@ -475,7 +475,7 @@ describe("/api/comments", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe(
-            'Key (username)=(not-a-user) is not present in table "users".'
+            'Key (username)=(not-a-user) is not present in table "users".',
           );
         });
     });
@@ -502,7 +502,7 @@ describe("/api/comments", () => {
         .expect(404)
         .then(({ body: { msg } }) => {
           expect(msg).toBe(
-            'Key (video_id)=(not-an-id) is not present in table "videos".'
+            'Key (video_id)=(not-an-id) is not present in table "videos".',
           );
         });
     });
@@ -526,7 +526,7 @@ describe("/api/videos/:video_id", () => {
               votes: 0,
               description: "fourth video",
               cloudinary_id: "iujdhsnd",
-            })
+            }),
           );
         });
     });
@@ -538,7 +538,7 @@ describe("/api/videos/:video_id", () => {
           expect(video).toEqual(
             expect.objectContaining({
               comment_count: expect.any(String),
-            })
+            }),
           );
         });
     });
@@ -548,7 +548,7 @@ describe("/api/videos/:video_id", () => {
         .expect(200)
         .then(({ body: { video } }) => {
           expect(video).toEqual(
-            expect.objectContaining({ video_tag_array: expect.any(Array) })
+            expect.objectContaining({ video_tag_array: expect.any(Array) }),
           );
         });
     });
@@ -579,7 +579,7 @@ describe("/api/videos/:video_id", () => {
                 expect(videos[i].cloudinary_id).not.toBe("iujdhsnd");
               }
               return db.query(
-                `SELECT * FROM videos WHERE cloudinary_id = 'iujdhsnd';`
+                `SELECT * FROM videos WHERE cloudinary_id = 'iujdhsnd';`,
               );
             })
             .then(({ rows }) => {
@@ -708,7 +708,7 @@ describe("/api/tags", () => {
   });
 });
 
-describe.only("/api/signin", () => {
+describe("/api/signin", () => {
   describe("POST", () => {
     test("Status:200 - Returns user object", () => {
       return request(app)

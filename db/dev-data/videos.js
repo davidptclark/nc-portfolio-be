@@ -1,0 +1,42 @@
+module.exports = [
+  {
+    title: "video1",
+    username: "butter_bridge",
+    created_at: 1602986400000,
+    votes: 0,
+    description: "first video",
+    cloudinary_id: "mkkherxxnkt7siyewcq3",
+  },
+  {
+    title: "video2",
+    username: "icellusedkars",
+    created_at: 1578406080000,
+    votes: 0,
+    description: "second video",
+    cloudinary_id: "o6n3d6nsnyujwiomqv1r",
+  },
+  {
+    title: "video3",
+    username: "icellusedkars",
+    created_at: 1596464040000,
+    votes: 0,
+    description: "third video",
+    cloudinary_id: "nbnczaucs16vvogfunok",
+  },
+  {
+    title: "video4",
+    username: "paul",
+    created_at: 1587089280000,
+    votes: 0,
+    description: "fourth video",
+    cloudinary_id: "hhmj0cjop2ea3ghhtaki",
+  },
+  {
+    title: "video5",
+    username: "paul",
+    created_at: 1591438200000,
+    votes: 0,
+    description: "fifth video",
+    cloudinary_id: "gfuiwuksrsn1ctyhabus",
+  },
+];

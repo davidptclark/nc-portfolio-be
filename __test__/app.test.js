@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const request = require("supertest");
 const testData = require("../db/test-data/index");
 const { compareDates } = require("../db/helpers/utils");
+
 afterAll(() => db.end());
 beforeEach(() => {
   return seed(testData);
@@ -288,7 +289,7 @@ describe("/api/videos", () => {
   });
 });
 
-describe.only("/api/users/:username", () => {
+describe("/api/users/:username", () => {
   describe("PATCH", () => {
     test("Status:200 - Returns patched user", () => {
       return request(app)
@@ -529,7 +530,28 @@ describe("/api/videos/:video_id", () => {
           );
         });
     });
-
+    test("Status:200 - video has comment_count property", () => {
+      return request(app)
+        .get("/api/videos/iujdhsnd")
+        .expect(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({
+              comment_count: expect.any(String),
+            }),
+          );
+        });
+    });
+    test("Status:200 - video has video_tag_array property", () => {
+      return request(app)
+        .get("/api/videos/iujdhsnd")
+        .expect(200)
+        .then(({ body: { video } }) => {
+          expect(video).toEqual(
+            expect.objectContaining({ video_tag_array: expect.any(Array) }),
+          );
+        });
+    });
     test("Status:404 - The video requested doesn't exist", () => {
       return request(app)
         .get("/api/videos/non-existant")

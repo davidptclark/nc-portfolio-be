@@ -22,7 +22,7 @@ exports.authenticateUser = (username, password) => {
       if (rows.length === 0)
         return Promise.reject({ status: 404, msg: "User Not Found" });
 
-      return password === rows[0].password;
+      return bcrypt.compare(password, rows[0].password);
     })
     .then((result) => {
       if (!result)

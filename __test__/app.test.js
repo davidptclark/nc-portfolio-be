@@ -538,7 +538,7 @@ describe("/api/videos/:video_id", () => {
           expect(video).toEqual(
             expect.objectContaining({
               comment_count: expect.any(String),
-            }),
+            })
           );
         });
     });
@@ -548,7 +548,7 @@ describe("/api/videos/:video_id", () => {
         .expect(200)
         .then(({ body: { video } }) => {
           expect(video).toEqual(
-            expect.objectContaining({ video_tag_array: expect.any(Array) }),
+            expect.objectContaining({ video_tag_array: expect.any(Array) })
           );
         });
     });
@@ -708,15 +708,14 @@ describe("/api/tags", () => {
   });
 });
 
-describe("/api/signin", () => {
+describe.only("/api/signin", () => {
   describe("POST", () => {
     test("Status:200 - Returns user object", () => {
       return request(app)
         .post("/api/signin")
         .send({
           username: "butter_bridge",
-          password:
-            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
+          password: "Password1",
         })
         .expect(200)
         .then(({ body: { user } }) => {
@@ -735,8 +734,7 @@ describe("/api/signin", () => {
         .post("/api/signin")
         .send({
           username: "Invalid",
-          password:
-            "$2b$05$zIAoWPt29Vs7XzBBhjtgtOkxObCy/uWDdKeJghv.awos1QEttVRFi",
+          password: "Password1",
         })
         .expect(404)
         .then(({ body: { msg } }) => {

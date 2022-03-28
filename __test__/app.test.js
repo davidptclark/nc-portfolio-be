@@ -11,7 +11,7 @@ beforeEach(() => {
 });
 
 describe("/api/videos", () => {
-  describe.only("GET", () => {
+  describe("GET", () => {
     test("Status:200 - should return an array of video info", () => {
       return request(app)
         .get("/api/videos")

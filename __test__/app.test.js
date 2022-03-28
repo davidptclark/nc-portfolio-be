@@ -135,6 +135,18 @@ describe("/api/videos", () => {
             });
         });
       });
+      describe("Username", () => {
+        test("Status:200 - Returns all videos associated with user", () => {
+          return request(app)
+            .get("/api/videos?username=butter_bridge")
+            .expect(200)
+            .then(({ body: { videos } }) => {
+              videos.forEach((video) => {
+                expect(video.username).toBe("butter_bridge");
+              });
+            });
+        });
+      });
     });
   });
   describe("POST", () => {

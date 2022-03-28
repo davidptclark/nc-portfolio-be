@@ -82,8 +82,10 @@ exports.postVideo = (req, res, next) => {
   Promise.all([
     addVideo(title, username, description, cloudinary_id),
     addUniqueTags(tags),
-    addVideoIdAndTags(tags, cloudinary_id),
   ])
+    .then(([body]) => {
+      return Promise.all([body, addVideoIdAndTags(tags, cloudinary_id)]);
+    })
     .then(([body]) => {
       res.status(201).send({ postedVideo: body[0] });
     })

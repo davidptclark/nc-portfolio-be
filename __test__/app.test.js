@@ -163,31 +163,32 @@ describe("/api/videos", () => {
           );
         });
     });
-    test("Status:201 - should post a video and only unique tags should be in the tag table", () => {
+    test("Status:201 - should post a video with new tags and respond with a 201", () => {
       const testVideo = {
-        title: "My new React Project",
-        username: "icellusedkars",
-        description: "This a front-end project using React and MUI.",
-        cloudinary_id: "adsf89adz",
-        tags: ["vue", "redux", "javascript", "python"], //Two new tags, two existing tags
+        title: "Test",
+        username: "sam",
+        description: "H",
+        cloudinary_id: "87a48c78b6fc356d994a45e1d0cc07e5",
+        tags: ["Js", "Css"], //Two new tags
       };
       return request(app)
         .post("/api/videos")
         .send(testVideo)
         .expect(201)
         .then(() => {
-          return db.query("SELECT * FROM tags");
+          return db.query("SELECT * FROM tags;");
         })
         .then(({ rows }) => {
           expect(rows.length).toBe(10);
         });
     });
-    test("Status:201 - should post a video and add one instance of video id with each tag in tags_video table", () => {
+
+    test("Status: 201 - should post a video and add one instance of video id with each tag in tags_video table", () => {
       const testVideo = {
-        title: "My new React Project",
+        title: "Test",
         username: "icellusedkars",
-        description: "This a front-end project using React and MUI.",
-        cloudinary_id: "adsf89adz",
+        description: "H",
+        cloudinary_id: "87a48c78b6fc356d994a45e1d0cc07e5",
         tags: ["vue", "redux", "javascript", "python"], //Two new tags, two existing tags
       };
       return request(app)
@@ -195,12 +196,14 @@ describe("/api/videos", () => {
         .send(testVideo)
         .expect(201)
         .then(() => {
-          return db.query("SELECT * FROM tags_videos");
+          return db.query("SELECT * FROM tags_videos;");
         })
         .then(({ rows }) => {
           expect(rows.length).toBe(11);
           expect(
-            rows.filter((row) => row.video_id === "adsf89adz").length,
+            rows.filter(
+              (row) => row.video_id === "87a48c78b6fc356d994a45e1d0cc07e5",
+            ).length,
           ).toBe(4);
         });
     });

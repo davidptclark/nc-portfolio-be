@@ -16,6 +16,7 @@ exports.getVideos = (req, res, next) => {
   let tags = [];
   const sort_by = req.query.sort_by;
   const tag = req.query.tag;
+  const username = req.query.username;
   let order = req.query.order;
 
   if (tag) {
@@ -39,7 +40,7 @@ exports.getVideos = (req, res, next) => {
 
   Promise.all(promiseArr)
     .then(() => {
-      return fetchVideos(sort_by, tags, order);
+      return fetchVideos(sort_by, tags, order, username);
     })
     .then((videos) => {
       res.status(200).send({ videos });

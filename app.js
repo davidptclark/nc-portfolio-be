@@ -23,6 +23,7 @@ const { getAllTags } = require("./controllers/tags-controllers");
 const {
   getCommentsByVideoId,
   postCommentByVideoId,
+  deleteCommentByCommentId,
 } = require("./controllers/comments-controllers");
 
 const app = express();
@@ -47,6 +48,7 @@ app.post("/api/users", postUser);
 //Comments
 app.get("/api/comments/:video_id", getCommentsByVideoId);
 app.post("/api/comments/:video_id", postCommentByVideoId);
+app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 
 app.get("/api/tags", getAllTags);
 

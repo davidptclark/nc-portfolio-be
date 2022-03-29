@@ -1,6 +1,7 @@
 const {
   fetchCommentsByVideoId,
   addCommentByVideoId,
+  removeCommentByCommentId,
 } = require("../models/comments-models");
 exports.getCommentsByVideoId = (req, res, next) => {
   const video_id = req.params.video_id;
@@ -20,6 +21,17 @@ exports.postCommentByVideoId = (req, res, next) => {
   addCommentByVideoId(body, username, video_id)
     .then((body) => {
       res.status(201).send({ postedComment: body[0] });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentByCommentId(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);

@@ -422,7 +422,7 @@ describe("/api/comments/:video_id", () => {
         .get("/api/comments/2344afadsfasd")
         .expect(404)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Path not found");
+          expect(msg).toBe("Video not found");
         });
     });
 

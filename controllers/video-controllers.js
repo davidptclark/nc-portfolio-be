@@ -106,8 +106,7 @@ exports.deleteVideoById = (req, res, next) => {
   removeVideoById(video_id)
     .then((cloudId) => {
       cloudinary.uploader.destroy(cloudId, (err, result) => {
-        if (err) console.log(err);
-        else console.log(result);
+        if (err) return Promise.reject({ status: 400, msg: err });
       });
       res.status(204).end();
     })

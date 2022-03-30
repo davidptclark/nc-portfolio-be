@@ -106,6 +106,5 @@ exports.removeVideoById = (cloudinary_id) => {
           msg: `No video found for video_id: ${cloudinary_id}`,
         });
       }
-      return cloudinary_id;
     });
 };

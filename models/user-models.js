@@ -33,10 +33,12 @@ exports.authenticateUser = (username, password) => {
 exports.updateUser = (username, { bio, social_url, avatar_url }) => {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-  if (!(bio && social_url && avatar_url))
+  if (bio === undefined && social_url === undefined && avatar_url === undefined)
     return Promise.reject({ status: 400, msg: "Bad Request" });
 
-  if (!urlRegex.test(avatar_url) || !urlRegex.test(social_url))
+  if (!urlRegex.test(avatar_url) && avatar_url !== null)
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  if (!urlRegex.test(social_url) && social_url !== null)
     return Promise.reject({ status: 400, msg: "Bad Request" });
 
   return db

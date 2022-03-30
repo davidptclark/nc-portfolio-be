@@ -2,17 +2,18 @@ const db = require("../db/connection");
 
 exports.fetchCommentsByVideoId = (video_id) => {
   return db
-    .query(
-      "SELECT * FROM comments WHERE video_id = $1 ORDER BY created_at DESC",
-      [video_id]
-    )
+    .query("SELECT * FROM videos WHERE cloudinary_id = $1", [video_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Path not found" });
+        return Promise.reject({ status: 404, msg: "Video not found" });
       } else {
-        return rows;
+        return db.query(
+          "SELECT * FROM comments WHERE video_id = $1 ORDER BY created_at DESC",
+          [video_id]
+        );
       }
-    });
+    })
+    .then(({ rows }) => rows);
 };
 
 exports.addCommentByVideoId = (body, username, video_id) => {

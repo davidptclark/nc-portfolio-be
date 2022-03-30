@@ -11,6 +11,13 @@ const {
   addVideoIdAndTags,
   checkIfTagExists,
 } = require("../models/tags-models");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 exports.getVideos = (req, res, next) => {
   let tags = [];
@@ -97,7 +104,11 @@ exports.deleteVideoById = (req, res, next) => {
   const { video_id } = req.params;
 
   removeVideoById(video_id)
-    .then(() => {
+    .then((cloudId) => {
+      cloudinary.uploader.destroy(cloudId, (err, result) => {
+        if (err) console.log(err);
+        else console.log(result);
+      });
       res.status(204).end();
     })
     .catch(next);

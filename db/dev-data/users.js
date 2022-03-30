@@ -2,7 +2,7 @@ module.exports = [
   {
     username: "butter_bridge",
     avatar_url:
-      "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+      "https://gravatar.com/avatar/19c3441eb33db7ae3d8eea57f64abc32?s=400&d=robohash&r=x",
     bio: "I love making videos for NC",
     type: "graduate",
     social_url: "www.example.com",
@@ -11,7 +11,7 @@ module.exports = [
   {
     username: "icellusedkars",
     avatar_url:
-      "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+      "https://robohash.org/bce18a1831c0ff6f6c59a2ba8b95cdec?set=set4&bgset=&size=400x400",
 
     bio: "I like cooking",
     type: "graduate",
@@ -20,7 +20,8 @@ module.exports = [
   },
   {
     username: "sam",
-    avatar_url: "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+    avatar_url:
+      "https://gravatar.com/avatar/1ff9e633e70407db2db1e548b68b9d1a?s=400&d=robohash&r=x",
     bio: "I like singing",
     type: "graduate",
     social_url: "www.example.com",
@@ -28,7 +29,8 @@ module.exports = [
   },
   {
     username: "paul",
-    avatar_url: "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+    avatar_url:
+      "https://robohash.org/d1f0ea75650d4bfa947040709d8bb4d6?set=set4&bgset=&size=400x400",
     bio: "I love playing games",
     type: "graduate",
     social_url: "www.example.com",
@@ -37,7 +39,7 @@ module.exports = [
   {
     username: "do_nothing",
     avatar_url:
-      "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "https://robohash.org/aee14f3f47b6b65b8ef9cc13a7ed18dd?set=set4&bgset=&size=400x400",
     bio: "I love lego",
     type: "employer",
     social_url: "www.example.com",

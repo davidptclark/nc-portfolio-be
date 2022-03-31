@@ -17,5 +17,11 @@ exports.handlePsqlErrors = (err, req, res, next) => {
       .send({ msg: "Cloudinary ID cannot be an empty string/null" });
   } else if (err.code === "23503") {
     res.status(404).send({ msg: err.detail });
-  }
+  } else if (err.code === "23505") {
+    res.status(400).send({ msg: "User already exists" });
+  } else next(err);
+};
+
+exports.handle500s = (err, req, res, next) => {
+  res.status(500).send({ msg: "internal server error" });
 };

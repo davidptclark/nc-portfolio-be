@@ -27,22 +27,22 @@ module.exports = [
     social_url: "www.example.com",
     password: "$2b$05$uqems0pT3dRtoJ3iwbR3veKGD5a9jt5kbGCaGARrfGcKk7M5bmZhu",
   },
-  {
-    username: "paul",
-    avatar_url:
-      "https://robohash.org/d1f0ea75650d4bfa947040709d8bb4d6?set=set4&bgset=&size=400x400",
-    bio: "I love playing games",
-    type: "graduate",
-    social_url: "www.example.com",
-    password: "$2b$05$L1rPO1e1OruS1LnE8Y1wNOIw/PhTmajojO.h7MJISoTFKCBS6ZNou",
-  },
-  {
-    username: "do_nothing",
-    avatar_url:
-      "https://robohash.org/aee14f3f47b6b65b8ef9cc13a7ed18dd?set=set4&bgset=&size=400x400",
-    bio: "I love lego",
-    type: "employer",
-    social_url: "www.example.com",
-    password: "$2b$05$aVgsdq58ltefBIje7Rg5kOImzQUm6InVCiR.14yvTOFxkIe98RWJu",
-  },
+  // {
+  //   username: "paul",
+  //   avatar_url:
+  //     "https://robohash.org/d1f0ea75650d4bfa947040709d8bb4d6?set=set4&bgset=&size=400x400",
+  //   bio: "I love playing games",
+  //   type: "graduate",
+  //   social_url: "www.example.com",
+  //   password: "$2b$05$L1rPO1e1OruS1LnE8Y1wNOIw/PhTmajojO.h7MJISoTFKCBS6ZNou",
+  // },
+  // {
+  //   username: "do_nothing",
+  //   avatar_url:
+  //     "https://robohash.org/aee14f3f47b6b65b8ef9cc13a7ed18dd?set=set4&bgset=&size=400x400",
+  //   bio: "I love lego",
+  //   type: "employer",
+  //   social_url: "www.example.com",
+  //   password: "$2b$05$aVgsdq58ltefBIje7Rg5kOImzQUm6InVCiR.14yvTOFxkIe98RWJu",
+  // },
 ];

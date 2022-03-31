@@ -8,6 +8,7 @@ const {
 const {
   handlePsqlErrors,
   handleNonPSQLErrors,
+  handle500s,
 } = require("./controllers/errorControllers");
 
 const express = require("express");
@@ -56,6 +57,7 @@ app.get("/api/tags", getAllTags);
 
 app.use(handleNonPSQLErrors);
 app.use(handlePsqlErrors);
+app.use(handle500s);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Path not found" });

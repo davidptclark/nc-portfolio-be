@@ -829,5 +829,19 @@ describe("/api/users", () => {
           expect(msg).toBe("Bad Request");
         });
     });
+    test("Status:400 - Invalid user", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "butter_bridge",
+          password:
+            "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+          type: "graduate",
+        })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("User already exists");
+        });
+    });
   });
 });

@@ -1,42 +1,62 @@
-# nc-portfolio-be
+# Northcoders Portfolio: Back-end 
 
-Our backend api is hosted on heroku at:
+## 💭 Description
+
+This API is used by our front-end app: Northcoders Portfolio
+
+---
+## 🏠 Hosted version
 
 https://nc-portfolio-app.herokuapp.com/api
 
-# Setup
+Following this URL will produce a JSON file that will list all available endpoints: with available queries, example request bodies, and example responses.
 
-Add the files .env.test and .env.development containing:
+For example 👇:
+
+![Imgur](https://imgur.com/a/slwBlh1)
+
+---
+## 🖥️ Running the API Locally
+
+🚧 Before beginning setup, please check you have _at least_ these versions of the following:
+
+- `Node.js` - v16.13.1
+- `Postgres` - v. 12.0.5
+
+After doing so, perform each step, in order:
+
+### 💻 ➡️ 💻 Cloning the repository:
 
 ```
-PGDATABASE=nc_be_test
+git clone https://github.com/davidptclark/nc-portfolio-be.git
 ```
 
-and
+### 🏗️ Install required packages:
+
+Simply run `npm install` to install the necessary dependencies required.
+
+### 🌐 Environment setup:
+
+This repository does not contain the necessary .env files that set the value of PGDATABASE to a specific database, as they are part of the gitignore and will only be stored locally. After cloning, you will need to create two .env files in the root directory:
+
+`.env.development`
 
 ```
 PGDATABASE=nc_be
 ```
 
-respectively.
+`.env.test`
 
-Mininum versions of :
+```
+PGDATABASE=nc_be_test
+```
 
-Node.js : v16.13.1
-PSQL : 12.0.5
+### 🌱 Seeding local databases:
 
-are required to run locally.
+To start the API, run the command `npm start`. This will instruct the API to listen on the default port: 9090.
 
-# Summary
+If you would like to reinitialise the database, use the command `npm run setup-db` followed by `npm run seed` to re-seed the database.
 
-Nc-portfolios is a tool for app-creators and employers to share and view video demos of apps they've made.
+### 🧪 Running tests:
 
-The live messaging feed allows creators to connect with employers easily and they can share information about themselves such as a github link.
-
-The app has in built user authentication.
-
-# Technology
-
-The front end of the app is built in react native. We used expo-av video player to render the videos and cloudinary to store our video files on. The user authentication is achieved using hashed passwords on our backend data base and becrypt to compare the hashed passwords.
-
-The back end server is created using express and hosted on heroku. Our database is built using psql.
+The available endpoint have been created using Jest and pre-written tests are found in `./__tests__/`. The test files are configured to re-seed the database after each test is complete; to run these tests, as well as any you have written, use the command `npm test FILENAME`.

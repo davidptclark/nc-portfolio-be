@@ -13,7 +13,7 @@ Following this URL will produce a JSON file that will list all available endpoin
 
 For example 👇:
 
-![Imgur](https://imgur.com/a/slwBlh1)
+![Imgur](https://0x0.st/obtU.png)
 
 ---
 ## 🖥️ Running the API Locally

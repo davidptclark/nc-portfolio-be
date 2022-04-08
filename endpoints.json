@@ -1,0 +1,206 @@
+{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/videos": {
+    "description": "serves an array of all videos",
+    "queries": ["sort_by", "order", "tag", "username"],
+    "exampleResponse": {
+      "videos": [
+        {
+          "cloudinary_id": "js86fnshs8s",
+          "title": "My New App!",
+          "username": "billybean",
+          "votes": 3,
+          "description": "My new app built during the NC bootcamp.",
+          "created_at": "2020-01-07T14:08:00.000Z",
+          "video_tag_array": ["JS", "React"],
+          "comment_count": 1
+        }
+      ]
+    }
+  },
+  "POST /api/videos": {
+    "description": "adds new video and returns posted video",
+    "queries": [],
+    "exampleVideo": {
+      "title": "My New App!",
+      "username": "billybean",
+      "description": "My new app built during the NC bootcamp.",
+      "cloudinary_id": "87a48c78b6fc356d994a45e1d0cc07e5",
+      "tags": ["Js", "Css"]
+    },
+    "exampleResponse": [
+      {
+        "cloudinary_id": "87a48c78b6fc356d994a45e1d0cc07e5",
+        "title": "My New App!",
+        "username": "billybean",
+        "votes": 0,
+        "description": "My new app built during the NC bootcamp.",
+        "created_at": "2020-01-07T14:08:00.000Z",
+        "video_tag_array": ["Js", "Css"],
+        "comment_count": 0
+      }
+    ]
+  },
+  "GET /api/users/:username": {
+    "description": "serves a single user object",
+    "queries": [],
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          "bio": "I love making videos for NC",
+          "type": "graduate",
+          "social_url": "www.example.com"
+        }
+      ]
+    }
+  },
+  "PATCH /api/users/:username": {
+    "description": "Updates an existing user's information",
+    "queries": [],
+    "exampleRequestBody": {
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+      "bio": "I love making videos for NC woo",
+      "social_url": "www.example-changed.com"
+    },
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          "bio": "I love making videos for NC woo",
+          "type": "graduate",
+          "social_url": "www.example-changed.com"
+        }
+      ]
+    }
+  },
+  "GET /api/comments/:video_id": {
+    "description": "serves an array of all comments by video id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 2,
+          "body": "Amazing!",
+          "username": "billybean",
+          "video_id": 4,
+          "created_at": "2020-01-07T14:08:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/comments": {
+    "description": "adds new comment and returns posted comment",
+    "queries": [],
+    "exampleComment": {
+      "body": "Great idea!",
+      "username": "icellusedkars"
+    },
+    "exampleResponse": [
+      {
+        "comment_id": 5,
+        "body": "Great idea!",
+        "username": "icellusedkars",
+        "video_id": "adsf89adf",
+        "created_at": "2020-01-07T14:08:00.000Z"
+      }
+    ]
+  },
+  "GET /api/tags": {
+    "description": "serves an array of all unique tags",
+    "queries": [],
+    "exampleResponse": {
+      "tags": [
+        { "tag": "javascript" },
+        { "tag": "python" },
+        { "tag": "aws" },
+        { "tag": "express" },
+        { "tag": "react-native" },
+        { "tag": "jest" },
+        { "tag": "frontend" },
+        { "tag": "backend" }
+      ]
+    }
+  },
+  "POST /api/signin": {
+    "description": "Signs in existing user and returns user object",
+    "queries": [],
+    "exampleSignin": {
+      "username": "butter_bridge",
+      "password": "Password1"
+    },
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          "bio": "I love making videos for NC",
+          "type": "graduate",
+          "social_url": "www.example.com"
+        }
+      ]
+    }
+  },
+  "POST /api/users": {
+    "description": "Signs up new user and returns sparse user object",
+    "queries": [],
+    "exampleSignin": {
+      "username": "butter_bridge",
+      "password": "$2b$05$alD9XX/ESmHfKBDMMKjHcuCkmOyA5U4eL52hoBJtMn829eGrJ57.C",
+      "type": "graduate"
+    },
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": null,
+          "bio": null,
+          "type": "graduate",
+          "social_url": null
+        }
+      ]
+    }
+  },
+  "GET /api/videos/:video_id": {
+    "description": "serves a single video object by video id",
+    "queries": [],
+    "exampleResponse": {
+      "video": [
+        {
+          "cloudinary_id": "js86fnshs8s",
+          "title": "My New App!",
+          "username": "billybean",
+          "votes": 3,
+          "description": "My new app built during the NC bootcamp.",
+          "created_at": 12837829,
+          "video_tag_array": ["JS", "React"],
+          "comment_count": 1
+        }
+      ]
+    }
+  },
+  "DELETE /api/videos/:video_id": {
+    "description": "Deletes a single video by video id and returns no body",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "PATCH /api/videos/:video_id": {
+    "description": "adds and removes votes from video",
+    "queries": [],
+    "exampleVote": { "vote": -4 },
+    "exampleResponse": [
+      {
+        "cloudinary_id": "jsueif32",
+        "title": "My new app!",
+        "username": "icellusedkars",
+        "created_at": "2020-01-07T14:08:00.000Z",
+        "votes": -4,
+        "description": "My super secret project...well, not anymore!"
+      }
+    ]
+  }
+}

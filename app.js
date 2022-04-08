@@ -9,7 +9,7 @@ const {
   handlePsqlErrors,
   handleNonPSQLErrors,
   handle500s,
-} = require("./controllers/errorControllers");
+} = require("./controllers/error-controllers");
 
 const express = require("express");
 const {
@@ -27,9 +27,13 @@ const {
   deleteCommentByCommentId,
 } = require("./controllers/comments-controllers");
 
+const { getEndpoints } = require("./controllers/api-controllers");
+
 const app = express();
 
 app.use(express.json());
+
+app.get("/api", getEndpoints);
 
 //Videos
 app.get("/api/videos", getVideos);

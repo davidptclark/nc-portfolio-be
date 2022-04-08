@@ -2,7 +2,7 @@
 
 ## 💭 Description
 
-This API is used by our front-end app: Northcoders Portfolio
+This API is used by our front-end app: ![Northcoders Portfolio](https://github.com/davidptclark/nc-portfolio-fe)
 
 ---
 ## 🏠 Hosted version
